@@ -69,13 +69,6 @@
     transition:0.25s ease;
 }
 
-.player-controls button:hover{
-    transform:scale(1.1);
-    background:#1db954;
-    color:black;
-    box-shadow:0 0 20px rgba(29,185,84,0.6);
-}
-
 /* REMOVE BLUE FOCUS GLOW COMPLETELY */
 .player button:focus{
     outline:none !important;
@@ -482,6 +475,40 @@ button:active{
         height:38px;
         font-size:14px;
     }
+}
+/* FIX: MOBILE PLAYER EXTRA COMPACT */
+@media(max-width:768px){
+
+  .player{
+    padding:5px 8px;
+  }
+
+  #progressBar{
+    height:2px;
+    margin:6px 0 8px;
+  }
+
+  #progressBar::-webkit-slider-thumb{
+    height:8px;
+    width:8px;
+    margin-top:-3px;
+  }
+
+  .player-controls{
+    gap:6px;
+  }
+
+  .player-controls button{
+    width:34px;
+    height:34px;
+    font-size:13px;
+    padding:0;
+  }
+
+  .player-top{
+    font-size:11px;
+    margin-bottom:2px;
+  }
 }
 </style>
 </head>
@@ -1085,6 +1112,7 @@ searchInput.addEventListener("keyup",()=>{
 
 </body>
 </html>
+
 
 
 
