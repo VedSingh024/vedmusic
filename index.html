@@ -49,10 +49,9 @@ body{
     text-align:center;
 }
 
-/* Main */
 .main{
-    margin-left:230px;
-    width:calc(100% - 230px); /* FIXED */
+    margin-left:0;
+    width:100%;
     padding:45px 45px 140px 45px;
 }
 
@@ -216,17 +215,19 @@ body{
     opacity:1;
 }
 
-/* Player */
 .player{
     position:fixed;
     bottom:0;
-    left:230px;
-    width:calc(100% - 230px); /* FIXED */
-    background:#111;
+    left:0;
+    width:100%;
     padding:12px 20px;
-    border-top:1px solid #222;
-}
 
+    background:rgba(17,17,17,0.6);  /* transparent */
+    backdrop-filter:blur(15px);
+    -webkit-backdrop-filter:blur(15px);
+
+    border-top:1px solid rgba(255,255,255,0.1);
+}
 /* Progress Bar */
 #progressBar{
     -webkit-appearance:none;
@@ -960,6 +961,7 @@ searchInput.addEventListener("keyup",()=>{
 
 </body>
 </html>
+
 
 
 
