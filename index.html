@@ -1,0 +1,1209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ved Music</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Poppins',sans-serif;
+}
+
+body{
+    background:linear-gradient(180deg,#121212,#1a1a1a);
+    color:white;
+    overflow-x:hidden;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar{width:8px;}
+::-webkit-scrollbar-track{background:#111;}
+::-webkit-scrollbar-thumb{background:#1db954;border-radius:10px;}
+
+/* Sidebar */
+.sidebar{
+    width:230px;
+    height:100vh;
+    background:#000;
+    padding:30px 20px;
+    position:fixed;
+    left:0;
+    top:0;
+    box-shadow:4px 0 20px rgba(0,0,0,0.5);
+}
+
+.logo{
+    font-size:24px;
+    font-weight:600;
+    margin-bottom:50px;
+    text-align:center;
+    width:100%;
+}
+.nav-links a{
+    display:block;
+    color:#b3b3b3;
+    margin:20px 0;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+.nav-links a.active{
+    color:#1db954;
+}
+
+.nav-links a:hover{
+    color:white;
+    transform:translateX(6px);
+}
+
+/* Main */
+.main{
+    margin-left:0;
+    padding:45px;
+    padding-bottom:120px;
+}
+
+/* Top */
+.topbar{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:40px;
+}
+
+.search-box input{
+    padding:10px 18px;
+    border-radius:25px;
+    border:none;
+    background:#1e1e1e;
+    color:white;
+    width:260px;
+    transition:0.3s;
+}
+
+.search-box input:focus{
+    outline:none;
+    box-shadow:0 0 12px #1db954;
+}
+
+/* Grid */
+.song-container{
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(180px,1fr));
+    gap:28px;
+}
+
+/* Liked list view */
+.song-container.list-view{
+    display:flex;
+    flex-direction:column;
+    gap:18px;
+}
+
+.song-container.list-view .song-card{
+    display:flex;
+    align-items:center;
+    gap:20px;
+}
+
+.song-container.list-view img{
+    width:80px;
+    height:80px;
+}
+
+/* Card */
+.song-card{
+    background:#181818;
+    padding:18px;
+    border-radius:22px;
+    transition:0.35s ease;
+    text-decoration:none;
+    color:white;
+    position:relative;
+    overflow:hidden;
+}
+
+.song-card:hover{
+    transform:translateY(-6px);
+    box-shadow:0 12px 20px rgba(0,0,0,0.35);
+}
+
+.song-card img{
+    width:100%;
+    border-radius:16px;
+    margin-bottom:14px;
+}
+
+.song-card:hover{
+    transform:translateY(-8px);
+    box-shadow:0 15px 25px rgba(0,0,0,0.4);
+}
+
+.song-name{
+    font-weight:600;
+}
+
+.artist-name{
+    font-size:13px;
+    color:#b3b3b3;
+    margin-top:3px;
+}
+.like-btn{
+    margin-top:10px;
+    font-size:20px;
+    cursor:pointer;
+    transition:0.2s ease;
+    color:#b3b3b3;
+}
+
+.like-btn.liked{
+    color:#1db954;
+}
+
+@keyframes pop{
+    0%{transform:scale(1);}
+    50%{transform:scale(1.4);}
+    100%{transform:scale(1);}
+}
+
+/* Player */
+.player{
+    position:fixed;
+    bottom:0;
+    left:0;
+    width:100%;
+    background:#000;
+    padding:18px;
+    text-align:center;
+    border-top:1px solid #282828;
+    font-size:14px;
+}
+
+/* Responsive */
+@media(max-width:900px){
+    .sidebar{width:70px;}
+    .main{margin-left:70px;padding:25px;}
+    .player{left:70px;width:calc(100% - 70px);}
+}
+.song-container.list-view .song-card::after{
+    top:50%;
+    right:20px;
+    bottom:auto;
+    transform:translateY(-50%);
+}
+
+.song-container.list-view .song-card:hover::after{
+    opacity:1;
+    transform:translateY(-50%);
+}
+
+.song-card:hover::after{
+    opacity:1;
+    transform:translateY(0);
+}
+.player button{
+    margin:0 8px;
+    padding:6px 14px;
+    border:none;
+    border-radius:20px;
+    background:#1db954;
+    color:black;
+    font-weight:600;
+    cursor:pointer;
+}
+.card-play{
+    position:absolute;
+    bottom:20px;
+    right:20px;
+    background:#1db954;
+    width:44px;
+    height:44px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border-radius:50%;
+    font-size:16px;
+    opacity:0;
+    transition:0.25s;
+}
+
+.song-card:hover .card-play{
+    opacity:1;
+}
+.song-container.list-view .card-play{
+    position:static;
+    margin-left:auto;
+    opacity:1;
+}
+
+    .controls{
+        gap: 15px;
+    }
+
+#progressBar{
+    width:400px;
+    max-width:90%;
+}
+.topbar{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    margin-bottom:40px;
+}
+
+.logo-main{
+    font-size:28px;
+    font-weight:600;
+    margin-bottom:15px;
+    text-align:center;
+}
+.topbar{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:20px;
+}
+
+.search-box input{
+    width:100%;
+    max-width:600px;
+}
+
+.nav-top{
+    display:flex;
+    gap:20px;
+}
+
+.nav-top button{
+    padding:8px 20px;
+    border:none;
+    border-radius:20px;
+    background:#1e1e1e;
+    color:white;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+.nav-top button:hover{
+    background:#1db954;
+    color:black;
+}
+
+.active-btn{
+    background:#1db954 !important;
+    color:black !important;
+}
+/* ===== DESKTOP FULL WIDTH UPGRADE ===== */
+@media (min-width: 900px){
+
+    .search-box{
+        width:100%;
+    }
+
+    .search-box input{
+        width:100%;
+        max-width:none;
+        padding:14px 20px;
+        font-size:16px;
+    }
+
+    .nav-top{
+        width:100%;
+    }
+
+    .nav-top button{
+        flex:1;
+        padding:14px 0;
+        font-size:15px;
+        font-weight:600;
+    }
+
+}
+.player{
+    position:fixed;
+    bottom:0;
+    left:0;
+    width:100%;
+    background:#111;
+    padding:8px 15px;     /* reduced */
+    border-top:1px solid #222;
+}
+/* ================= WAVE ANIMATION ================= */
+.wave{
+    display:inline-block;
+    margin-left:10px;
+}
+
+.wave span{
+    display:inline-block;
+    width:4px;
+    height:14px;
+    background:#1db954;
+    margin:0 2px;
+    animation:wave 1s infinite ease-in-out;
+}
+
+.wave span:nth-child(2){ animation-delay:0.2s; }
+.wave span:nth-child(3){ animation-delay:0.4s; }
+
+@keyframes wave{
+    0%,100%{height:10px;}
+    50%{height:22px;}
+}
+
+/* ================= SHUFFLE BUTTON ================= */
+#shuffleBtn{
+    background:#222;
+    color:#1db954;
+}
+
+/* ================= MINI PLAYER EXPAND ================= */
+.player.expanded{
+    padding:35px;
+    font-size:16px;
+}
+.song-name{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+}
+
+.wave{
+    margin-left:8px;
+    flex-shrink:0;
+}
+.song-card{
+    position:relative;
+}
+
+/* Wave fixed position */
+.wave{
+    position:absolute;
+    bottom:8px;
+    left:8px;
+    display:flex;
+    gap:3px;
+    pointer-events:none;
+}
+
+.wave span{
+    width:3px;
+    height:12px;
+    background:white;
+    animation:wave 1s infinite ease-in-out;
+}
+
+.wave span:nth-child(2){ animation-delay:0.2s; }
+.wave span:nth-child(3){ animation-delay:0.4s; }
+
+@keyframes wave{
+    0%,100%{height:8px;}
+    50%{height:18px;}
+}
+.player-top{
+    font-size:13px;
+    margin-bottom:6px;
+}
+
+#progressBar{
+    -webkit-appearance:none;
+    width:100%;
+    height:2px;              /* ultra slim */
+    border-radius:50px;
+    background:#2a2a2a;
+    outline:none;
+    margin:14px 0 20px 0;
+    cursor:pointer;
+}
+
+/* Track */
+#progressBar::-webkit-slider-runnable-track{
+    height:2px;
+    border-radius:50px;
+    background:#2a2a2a;
+}
+
+/* Thumb (small minimal dot) */
+#progressBar::-webkit-slider-thumb{
+    -webkit-appearance:none;
+    height:10px;
+    width:10px;
+    border-radius:50%;
+    background:#aaa;
+    margin-top:-4px;
+    transition:0.15s ease;
+}
+
+/* Slight hover only */
+#progressBar:hover::-webkit-slider-thumb{
+    background:white;
+}
+.player-controls{
+    display:flex;
+    justify-content:center;
+    gap:15px;
+}
+
+.player button{
+    padding:8px 16px;
+    border:none;
+    border-radius:20px;
+    background:#1e1e1e;
+    color:white;
+    cursor:pointer;
+    transition:0.2s;
+}
+
+.player button:hover{
+    background:#1db954;
+    color:black;
+}
+.player-controls{
+    display:flex;
+    justify-content:center;
+    gap:12px;
+}
+
+.player button{
+    padding:5px 12px;      /* smaller */
+    font-size:14px;
+    border:none;
+    border-radius:20px;
+    background:#1e1e1e;
+    color:white;
+    cursor:pointer;
+}
+/* ===== MOBILE PERFECT LAYOUT ===== */
+@media (max-width: 600px){
+
+    .topbar{
+        display:flex;
+        flex-direction:column;
+        align-items:center;
+        gap:15px;
+    }
+
+    .logo-main{
+        font-size:24px;
+        margin-bottom:5px;
+    }
+
+    .search-box input{
+        width:100%;
+        max-width:100%;
+    }
+
+    .nav-top{
+        width:100%;
+        display:flex;
+        gap:10px;
+    }
+
+    .nav-top button{
+        flex:1;
+        padding:10px 0;
+        font-size:14px;
+    }
+
+    /* 🔥 2 BOX PER ROW FIX */
+    .song-container{
+        grid-template-columns: repeat(2, 1fr);
+        gap:15px;
+    }
+
+    .song-card{
+        padding:12px;
+        border-radius:16px;
+    }
+
+    .song-card img{
+        border-radius:12px;
+        margin-bottom:8px;
+    }
+
+    /* Player compact */
+    .player{
+        padding:10px;
+    }
+
+    .player-controls{
+        gap:10px;
+    }
+
+    .player button{
+        padding:6px 10px;
+        font-size:13px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="main">
+<div class="topbar">
+
+    <div class="logo-main">Ved Music</div>
+
+    <div class="search-box">
+        <input type="text" id="searchInput" placeholder="Search songs...">
+    </div>
+
+    <div class="nav-top">
+        <button id="homeBtn" class="active-btn">Home</button>
+        <button id="likedBtn">Liked Songs</button>
+    </div>
+
+</div>
+<div class="song-container" id="songContainer">
+
+<a href="#" class="song-card" data-audio="Be my baby.mp3">
+    <img src="be my baby.jpg">
+    <div class="song-name">Be My Baby</div>
+    <div class="artist-name">The Ronettes</div>
+    <div class="like-btn">♡</div>
+    <div class="card-play">▶</div>
+</a>
+
+<a href="#" class="song-card" data-audio="Golden Brown.mp3">
+    <img src="golden brown.jpg">
+    <div class="song-name">Golden Brown</div>
+    <div class="artist-name">The Stranglers</div>
+    <div class="like-btn">♡</div>
+    <div class="card-play">▶</div>
+</a>
+
+<a href="#" class="song-card" data-audio="cupid.mp3">
+    <img src="cupid.jpg">
+    <div class="song-name">Cupid</div>
+    <div class="artist-name">FIFTY FIFTY</div>
+    <div class="like-btn">♡</div>
+    <div class="card-play">▶</div>
+</a>
+
+
+<a href="#" class="song-card" data-audio="Janam Janam.mp3">
+    <img src="Janam Janam.jpg">
+    <div class="song-name">Janam Janam</div>
+    <div class="artist-name">Arijit Singh</div>
+    <div class="like-btn">♡</div>
+    <div class="card-play">▶</div>
+</a>
+
+<a href="#" class="song-card" data-audio="All I Want.mp3">
+    <img src="All I Want.jpg">
+    <div class="song-name">All I Want</div>
+    <div class="artist-name">Mariah Carey</div>
+    <div class="like-btn">♡</div>
+    <div class="card-play">▶</div>
+</a>
+
+<a href="#" class="song-card" data-audio="Billie Jean.mp3">
+    <img src="Billie Jean.jpg">
+    <div class="song-name">Billie Jean</div>
+    <div class="artist-name">Michael Jackson</div>
+    <div class="like-btn">♡</div>
+    <div class="card-play">▶</div>
+</a>
+
+<a href="#" class="song-card" data-audio="I Wanna Be Yours.mp3">
+    <img src="I Wanna Be Yours.jpg">
+    <div class="song-name">I Wanna Be Yours</div>
+    <div class="artist-name">Arctic Monkeys</div>
+    <div class="like-btn">♡</div>
+    <div class="card-play">▶</div>
+</a>
+
+<a href="#" class="song-card" data-audio="Cheri Cheri Lady.mp3">
+    <img src="Cheri Cheri Lady.jpg">
+    <div class="song-name">Cheri Cheri Lady</div>
+    <div class="artist-name">Modern Talking</div>
+    <div class="like-btn">♡</div>
+    <div class="card-play">▶</div>
+</a>
+
+<a href="#" class="song-card" data-audio="Mere Naam Tu Full.mp3">
+    <img src="Mere naam tu.jpg">
+    <div class="song-name">Mere Naam Tu</div>
+    <div class="artist-name">Abhay Jodhpurkar</div>
+    <div class="like-btn">♡</div>
+    <div class="card-play">▶</div>
+</a>
+
+<a href="#" class="song-card" data-audio="Passo bem solto.mp3">
+    <img src="Passo bem solto.jpg">
+    <div class="song-name">Passo bem solto</div>
+    <div class="artist-name">ATLXS</div>
+    <div class="like-btn">♡</div>
+    <div class="card-play">▶</div>
+</a>
+<a href="#" class="song-card" data-audio="Dildara.mp3">
+    <img src="Dildara.jpg">
+    <div class="song-name">Dildara</div>
+    <div class="artist-name">Shafqat Amanat Ali</div>
+    <div class="like-btn">♡</div>
+    <div class="card-play">▶</div>
+</a>
+
+<a href="#" class="song-card" data-audio="Diet Mountain.mp3">
+    <img src="Diet Mountain Dew.jpg">
+    <div class="song-name">Diet Mountain Dew</div>
+    <div class="artist-name">Lana Del Rey</div>
+    <div class="like-btn">♡</div>
+    <div class="card-play">▶</div>
+</a>
+
+<a href="#" class="song-card" data-audio="Succession.mp3">
+    <img src="Succession.jpg">
+    <div class="song-name">Succession</div>
+    <div class="artist-name">Nicholas Britell</div>
+    <div class="like-btn">♡</div>
+    <div class="card-play">▶</div>
+</a>
+
+
+<a href="#" class="song-card" data-audio="Abrar Entry.mp3">
+    <img src="Abrar Entry.jpg">
+    <div class="song-name">Abrar's Entry</div>
+    <div class="artist-name">Animal Movie</div>
+    <div class="like-btn">♡</div>
+    <div class="card-play">▶</div>
+</a>
+
+<a href="#" class="song-card" data-audio="Les.mp3">
+    <img src="Les.jpg">
+    <div class="song-name">Les</div>
+    <div class="artist-name">Childish Gambino</div>
+    <div class="like-btn">♡</div>
+    <div class="card-play">▶</div>
+</a>
+
+<a href="#" class="song-card" data-audio="Push The Feeling On.mp3">
+    <img src="Push The Feeling On.jpg">
+    <div class="song-name">Push the Feeling On</div>
+    <div class="artist-name">Zarazzie</div>
+    <div class="like-btn">♡</div>
+    <div class="card-play">▶</div>
+</a>
+<a href="#" class="song-card" data-audio="Nomi.mp3">
+    <img src="Nomi.jpg">
+    <div class="song-name">Nomi</div>
+    <div class="artist-name">Hector</div>
+    <div class="like-btn">♡</div>
+    <div class="card-play">▶</div>
+</a>
+<a href="#" class="song-card" data-audio="Dhurandhar.mp3">
+    <img src="Dhurandhar.jpg">
+    <div class="song-name">Dhurandhar</div>
+    <div class="artist-name">Shashwat Sachdev</div>
+    <div class="like-btn">♡</div>
+    <div class="card-play">▶</div>
+</a>
+
+<a href="#" class="song-card" data-audio="Snowman.mp3">
+    <img src="Snowman.jpg">
+    <div class="song-name">Snowman</div>
+    <div class="artist-name">Sia</div>
+    <div class="like-btn">♡</div>
+    <div class="card-play">▶</div>
+</a>
+
+<a href="#" class="song-card" data-audio="Blue.mp3">
+    <img src="Blue.jpg">
+    <div class="song-name">Blue</div>
+    <div class="artist-name">Yung Kai</div>
+    <div class="like-btn">♡</div>
+    <div class="card-play">▶</div>
+</a>
+<a href="#" class="song-card" data-audio="Funk Criminal.mp3">
+    <img src="Funk Criminal.jpg">
+    <div class="song-name">Funk Criminal</div>
+    <div class="artist-name">Funk Tribu</div>
+    <div class="like-btn">♡</div>
+    <div class="card-play">▶</div>
+</a>
+<a href="#" class="song-card" data-audio="Kalank.mp3">
+    <img src="Kalank.jpg">
+    <div class="song-name">Kalank</div>
+    <div class="artist-name">Arijit Singh</div>
+    <div class="like-btn">♡</div>
+    <div class="card-play">▶</div>
+</a>
+
+<a href="#" class="song-card" data-audio="Powerhouse.mp3">
+    <img src="Powerhouse.jpg">
+    <div class="song-name">Powerhouse</div>
+    <div class="artist-name">Anirudh Ravichander</div>
+    <div class="like-btn">♡</div>
+    <div class="card-play">▶</div>
+</a>
+
+<a href="#" class="song-card" data-audio="For a reason.mp3">
+    <img src="For a reason.jpg">
+    <div class="song-name">For a reason</div>
+    <div class="artist-name">Karan Aujla</div>
+    <div class="like-btn">♡</div>
+    <div class="card-play">▶</div>
+</a>
+
+<a href="#" class="song-card" data-audio="Afgan jalebi.mp3">
+    <img src="Afghan Jalebi.jpg">
+    <div class="song-name">Afgan Jalebi</div>
+    <div class="artist-name">Syed Asrar Shah</div>
+    <div class="like-btn">♡</div>
+    <div class="card-play">▶</div>
+</a>
+
+<a href="#" class="song-card" data-audio="Character dheela.mp3">
+    <img src="Character dheela.jpg">
+    <div class="song-name">Character dheela</div>
+    <div class="artist-name">Neeraj Shridhar</div>
+    <div class="like-btn">♡</div>
+    <div class="card-play">▶</div>
+</a>
+
+<a href="#" class="song-card" data-audio="Montagem rugada.mp3">
+    <img src="Montagem rugada.jpg">
+    <div class="song-name">Montagem rugada</div>
+    <div class="artist-name">JXNDRO</div>
+    <div class="like-btn">♡</div>
+    <div class="card-play">▶</div>
+</a>
+<a href="#" class="song-card" data-audio="Rab Dikhta Hai.mp3">
+    <img src="Rab Dikhta Hai.jpg">
+    <div class="song-name">Rab Dikhta Hai</div>
+    <div class="artist-name">Roop Kumar Rathod</div>
+    <div class="like-btn">♡</div>
+    <div class="card-play">▶</div>
+</a>
+<a href="#" class="song-card" data-audio="Hypnotic.mp3">
+    <img src="Hypnotic.jpg">
+    <div class="song-name">Hypnotic</div>
+    <div class="artist-name">isq</div>
+    <div class="like-btn">♡</div>
+    <div class="card-play">▶</div>
+</a>
+<a href="#" class="song-card" data-audio="temnaya noch.mp3">
+    <img src="temnaya noch.jpg">
+    <div class="song-name">Темная ночь</div>
+    <div class="artist-name">Mark Bernes</div>
+    <div class="like-btn">♡</div>
+    <div class="card-play">▶</div>
+</a>
+<a href="#" class="song-card" data-audio="Veki Veki.mp3">
+    <img src="Veki Veki.jpg">
+    <div class="song-name">Veki Veki</div>
+    <div class="artist-name">DJZRX</div>
+    <div class="like-btn">♡</div>
+    <div class="card-play">▶</div>
+</a>
+<a href="#" class="song-card" data-audio="Jugraafiya.mp3">
+    <img src="Jugraafiya.jpg">
+    <div class="song-name">Jugraafiya</div>
+    <div class="artist-name">Udit Narayan & Shreya Ghoshal</div>
+    <div class="like-btn">♡</div>
+    <div class="card-play">▶</div>
+</a>
+
+<a href="#" class="song-card" data-audio="Ambarsariya.mp3">
+    <img src="Ambarsariya.jpg">
+    <div class="song-name">Ambarsariya</div>
+    <div class="artist-name">Sona Mohapatra</div>
+    <div class="like-btn">♡</div>
+    <div class="card-play">▶</div>
+</a>
+
+<a href="#" class="song-card" data-audio="ACIDO III.mp3">
+    <img src="ACIDO III.jpg">
+    <div class="song-name">ACIDO III</div>
+    <div class="artist-name">UdieNnx</div>
+    <div class="like-btn">♡</div>
+    <div class="card-play">▶</div>
+</a>
+
+<a href="#" class="song-card" data-audio="Kabhi Kabhi Aditi.mp3">
+    <img src="Kabhi Kabhi Aditi.jpg">
+    <div class="song-name">Kabhi Kabhi Aditi</div>
+    <div class="artist-name">Rashid Ali</div>
+    <div class="like-btn">♡</div>
+    <div class="card-play">▶</div>
+</a>
+
+<a href="#" class="song-card" data-audio="Tum Ho.mp3">
+    <img src="Tum Ho.jpg">
+    <div class="song-name">Tum Ho</div>
+    <div class="artist-name">Mohit Chauhan</div>
+    <div class="like-btn">♡</div>
+    <div class="card-play">▶</div>
+</a>
+
+<a href="#" class="song-card" data-audio="Muskaanein Jhooti Hai.mp3">
+    <img src="Muskaanein Jhooti Hai.jpg">
+    <div class="song-name">Muskaanein Jhooti Hai</div>
+    <div class="artist-name">Suman Sridhar</div>
+    <div class="like-btn">♡</div>
+    <div class="card-play">▶</div>
+</a>
+
+<a href="#" class="song-card" data-audio="Main Agar Kahoon.mp3">
+    <img src="Main Agar Kahoon.jpg">
+    <div class="song-name">Main Agar Kahoon</div>
+    <div class="artist-name">Sonu Nigam & Shreya Ghoshal</div>
+    <div class="like-btn">♡</div>
+    <div class="card-play">▶</div>
+</a>
+
+<a href="#" class="song-card" data-audio="Dagabaaz Re.mp3">
+    <img src="Dagabaaz Re.jpg">
+    <div class="song-name">Dagabaaz Re</div>
+    <div class="artist-name">Rahat Fateh Ali Khan</div>
+    <div class="like-btn">♡</div>
+    <div class="card-play">▶</div>
+</a>
+<a href="#" class="song-card" data-audio="Me Gustas Tu.mp3">
+    <img src="Me Gustas Tu.jpg">
+    <div class="song-name">Me Gustas Tu</div>
+    <div class="artist-name">Manu Chao</div>
+    <div class="like-btn">♡</div>
+    <div class="card-play">▶</div>
+</a>
+</div>
+</div>
+<div class="player">
+
+    <div class="player-top">
+        <span id="nowPlaying">No song playing</span>
+    </div>
+
+    <input type="range" id="progressBar" value="0" min="0" max="100" step="1">
+
+    <div class="player-controls">
+        <button id="prevBtn">⏮</button>
+        <button id="playPauseBtn">▶</button>
+        <button id="shuffleBtn">🔀</button>
+        <button id="nextBtn">⏭</button>
+    </div>
+
+    <audio id="audioPlayer"></audio>
+</div>
+<script>
+
+const likedBtn = document.getElementById("likedBtn");
+const homeBtn = document.getElementById("homeBtn");
+const container = document.getElementById("songContainer");
+const searchInput = document.getElementById("searchInput");
+
+const audioPlayer = document.getElementById("audioPlayer");
+const playPauseBtn = document.getElementById("playPauseBtn");
+const prevBtn = document.getElementById("prevBtn");
+const nextBtn = document.getElementById("nextBtn");
+const nowPlaying = document.getElementById("nowPlaying");
+
+const cards = Array.from(document.querySelectorAll(".song-card"));
+
+let likedSongs = new Set();
+const saved = JSON.parse(localStorage.getItem("likedSongs")) || [];
+
+saved.forEach(src => {
+    const card = cards.find(c => c.getAttribute("data-audio") === src);
+    if(card){
+        likedSongs.add(card);
+        const btn = card.querySelector(".like-btn");
+        btn.classList.add("liked");
+        btn.textContent = "♥";
+    }
+});
+
+let currentIndex = -1;
+
+
+/* LIKE BUTTON */
+document.querySelectorAll(".like-btn").forEach(btn=>{
+    btn.addEventListener("click",function(e){
+        e.preventDefault();
+        e.stopPropagation();
+
+        const card = this.closest(".song-card");
+
+        this.classList.toggle("liked");
+
+        if(this.classList.contains("liked")){
+            this.textContent = "♥";
+            likedSongs.add(card);
+        } else {
+            this.textContent = "♡";
+            likedSongs.delete(card);
+        }
+
+        localStorage.setItem(
+            "likedSongs",
+            JSON.stringify([...likedSongs].map(c => c.getAttribute("data-audio")))
+        );
+    });
+});
+
+
+function playSong(index){
+    if(index < 0 || index >= cards.length) return;
+
+    const card = cards[index];
+    const audioSrc = card.getAttribute("data-audio");
+    const songName = card.querySelector(".song-name").innerText;
+
+    if(!audioSrc) return;
+
+    audioPlayer.src = audioSrc;
+    audioPlayer.play();
+    currentIndex = index;
+
+    nowPlaying.innerText = "Now Playing: " + songName;
+
+    document.querySelectorAll(".card-play").forEach(icon=>{
+        icon.innerHTML = "▶";
+    });
+
+    cards[index].querySelector(".card-play").innerHTML = "❚❚";
+}
+
+
+/* CARD CLICK */
+cards.forEach((card, index)=>{
+    card.addEventListener("click", function(e){
+        e.preventDefault();
+
+        if(e.target.classList.contains("like-btn")) return;
+
+        if(currentIndex === index){
+            if(audioPlayer.paused){
+                audioPlayer.play();
+            } else {
+                audioPlayer.pause();
+            }
+        } else {
+            playSong(index);
+        }
+    });
+});
+
+
+/* PLAY PAUSE BUTTON */
+playPauseBtn.addEventListener("click", ()=>{
+    if(currentIndex === -1) return;
+
+    if(audioPlayer.paused){
+        audioPlayer.play();
+    } else {
+        audioPlayer.pause();
+    }
+});
+
+
+audioPlayer.addEventListener("play", ()=>{
+    playPauseBtn.innerHTML = "❚❚";
+
+    if(currentIndex !== -1){
+        const icon = cards[currentIndex].querySelector(".card-play");
+        if(icon) icon.innerHTML = "❚❚";
+    }
+});
+
+audioPlayer.addEventListener("pause", ()=>{
+    playPauseBtn.innerHTML = "▶";
+
+    if(currentIndex !== -1){
+        const icon = cards[currentIndex].querySelector(".card-play");
+        if(icon) icon.innerHTML = "▶";
+    }
+});
+
+
+/* ✅ AUTO NEXT — SMART (HOME + LIKED) */
+audioPlayer.addEventListener("ended", ()=>{
+
+    // Agar Liked list open hai
+    if(container.classList.contains("list-view")){
+
+        const likedArray = cards.filter(card => likedSongs.has(card));
+        const currentCard = cards[currentIndex];
+        const likedIndex = likedArray.indexOf(currentCard);
+
+        if(likedIndex !== -1 && likedArray.length > 0){
+
+            const nextLiked = likedArray[(likedIndex + 1) % likedArray.length];
+            const nextIndex = cards.indexOf(nextLiked);
+
+            playSong(nextIndex);
+            return;
+        }
+    }
+
+    // Normal Home playlist
+    if(currentIndex < cards.length - 1){
+        playSong(currentIndex + 1);
+    } else {
+        playSong(0);
+    }
+
+});
+
+
+/* NEXT BUTTON */
+nextBtn.addEventListener("click", ()=>{
+    audioPlayer.dispatchEvent(new Event("ended"));
+});
+
+
+/* PREVIOUS */
+prevBtn.addEventListener("click", ()=>{
+    if(container.classList.contains("list-view")){
+
+        const likedArray = cards.filter(card => likedSongs.has(card));
+        const currentCard = cards[currentIndex];
+        const likedIndex = likedArray.indexOf(currentCard);
+
+        if(likedIndex !== -1 && likedArray.length > 0){
+
+            const prevLiked = likedArray[
+                (likedIndex - 1 + likedArray.length) % likedArray.length
+            ];
+            const prevIndex = cards.indexOf(prevLiked);
+
+            playSong(prevIndex);
+            return;
+        }
+    }
+
+    if(currentIndex > 0){
+        playSong(currentIndex - 1);
+    }
+});
+
+
+/* SHOW LIKED */
+likedBtn.addEventListener("click",(e)=>{
+    e.preventDefault();
+
+    homeBtn.classList.remove("active-btn");
+    likedBtn.classList.add("active-btn");
+
+    container.classList.add("list-view");
+
+    cards.forEach(card=>{
+        if(likedSongs.has(card)){
+            card.style.display="flex";
+        } else {
+            card.style.display="none";
+        }
+    });
+});
+
+
+/* SHOW HOME */
+homeBtn.addEventListener("click",(e)=>{
+    e.preventDefault();
+
+    likedBtn.classList.remove("active-btn");
+homeBtn.classList.add("active-btn");
+
+    container.classList.remove("list-view");
+
+    cards.forEach(card=>{
+        card.style.display="block";
+    });
+});
+
+
+const progressBar = document.getElementById("progressBar");
+
+audioPlayer.addEventListener("timeupdate", () => {
+    if(audioPlayer.duration){
+        const progress = (audioPlayer.currentTime / audioPlayer.duration) * 100;
+        progressBar.value = progress;
+    }
+});
+
+progressBar.addEventListener("input", () => {
+    if(audioPlayer.duration){
+        const seekTime = (progressBar.value / 100) * audioPlayer.duration;
+        audioPlayer.currentTime = seekTime;
+    }
+});
+
+const shuffleBtn = document.getElementById("shuffleBtn");
+let isShuffle = false;
+
+/* SHUFFLE TOGGLE */
+shuffleBtn.addEventListener("click", ()=>{
+    isShuffle = !isShuffle;
+    shuffleBtn.style.background = isShuffle ? "#1db954" : "#222";
+    shuffleBtn.style.color = isShuffle ? "black" : "#1db954";
+});
+
+/* MODIFY playSong FUNCTION GLOW + WAVE */
+function highlightPlaying(index){
+    document.querySelectorAll(".song-card").forEach(c=>{
+        c.classList.remove("playing");
+        const wave = c.querySelector(".wave");
+        if(wave) wave.remove();
+    });
+
+    const card = cards[index];
+    card.classList.add("playing");
+
+    const wave = document.createElement("div");
+    wave.className = "wave";
+    wave.innerHTML = "<span></span><span></span><span></span>";
+
+    card.appendChild(wave);
+}
+
+/* MODIFY existing playSong call */
+const originalPlaySong = playSong;
+playSong = function(index){
+    originalPlaySong(index);
+    highlightPlaying(index);
+};
+
+/* MODIFY AUTO NEXT FOR SHUFFLE */
+audioPlayer.addEventListener("ended", ()=>{
+
+    if(isShuffle){
+        const randomIndex = Math.floor(Math.random() * cards.length);
+        playSong(randomIndex);
+        return;
+    }
+});
+
+/* MINI PLAYER EXPAND ON CLICK */
+document.querySelector(".player").addEventListener("dblclick", ()=>{
+    document.querySelector(".player").classList.toggle("expanded");
+});
+/* SEARCH */
+searchInput.addEventListener("keyup",()=>{
+    const value = searchInput.value.toLowerCase();
+
+    cards.forEach(card=>{
+        const name = card.querySelector(".song-name").innerText.toLowerCase();
+        let show = name.includes(value);
+
+        if(container.classList.contains("list-view")){
+            show = show && likedSongs.has(card);
+        }
+
+        card.style.display = show
+            ? (container.classList.contains("list-view") ? "flex" : "block")
+            : "none";
+    });
+});
+
+</script>
+
+
+
+</body>
+</html>
