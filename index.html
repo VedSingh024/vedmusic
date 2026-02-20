@@ -276,22 +276,42 @@ body{
     .main{margin-left:70px;width:calc(100% - 70px);padding:25px;}
     .player{left:70px;width:calc(100% - 70px);}
 }
-
 /* Mobile */
 @media(max-width:768px){
-    .sidebar{display:none;}
+    .sidebar{
+        display:none;
+    }
+
     .main{
         margin-left:0;
         width:100%;
         padding:20px 15px 120px 15px;
     }
+
     .song-container{
         grid-template-columns:repeat(2,1fr);
         gap:14px;
     }
+
     .player{
         left:0;
         width:100%;
+    }
+
+    /* REMOVE HOVER LIFT EFFECT */
+    .song-card:hover{
+        transform:none;
+        box-shadow:none;
+    }
+
+    /* Keep soft shadow only */
+    .song-card{
+        box-shadow:0 4px 10px rgba(0,0,0,0.4);
+    }
+
+    /* Play button always visible on mobile */
+    .card-play{
+        opacity:1;
     }
 }
 </style>
@@ -961,6 +981,7 @@ searchInput.addEventListener("keyup",()=>{
 
 </body>
 </html>
+
 
 
 
