@@ -540,105 +540,107 @@ body{
         font-size:13px;
     }
 }
-    /* ===== PREMIUM MOBILE FIX ===== */
+    /* ===== CLEAN MOBILE 2-COLUMN FIX ===== */
 @media (max-width: 600px){
 
     body{
-        padding: 15px;
+        padding: 12px;
     }
 
+    /* HEADER CENTER PERFECT */
     .topbar{
         display:flex;
         flex-direction:column;
         align-items:center;
-        gap:18px;
+        text-align:center;
+        gap:16px;
     }
 
     .logo-main{
-        font-size:26px;
+        font-size:24px;
         font-weight:600;
-        margin-bottom:5px;
+        margin:0;
+    }
+
+    .search-box{
+        width:100%;
+        display:flex;
+        justify-content:center;
     }
 
     .search-box input{
-        width:100%;
-        padding:12px 18px;
-        border-radius:30px;
+        width:95%;
+        padding:10px 16px;
+        border-radius:25px;
         font-size:14px;
     }
 
     .nav-top{
-        width:100%;
+        width:95%;
         display:flex;
-        gap:12px;
+        justify-content:center;
+        gap:10px;
     }
 
     .nav-top button{
         flex:1;
-        padding:10px 0;
+        padding:8px 0;
         font-size:14px;
-        border-radius:25px;
+        border-radius:20px;
     }
 
-    /* 2 cards per row */
+    /* 🔥 PERFECT 2 BOX GRID */
     .song-container{
-        grid-template-columns: repeat(2, 1fr);
-        gap:18px;
-        margin-top:20px;
+        grid-template-columns: 1fr 1fr;
+        gap:12px;               /* less spacing */
+        margin-top:18px;
     }
 
     .song-card{
-        padding:14px;
-        border-radius:18px;
+        padding:12px;
+        border-radius:16px;
     }
 
     .song-card img{
-        border-radius:14px;
-        margin-bottom:10px;
+        border-radius:12px;
+        margin-bottom:8px;
     }
 
     .song-name{
-        font-size:15px;
-        font-weight:500;
+        font-size:14px;
+        line-height:1.2;
     }
 
     .artist-name{
-        font-size:13px;
+        font-size:12px;
         opacity:0.7;
     }
 
-    /* ===== Liked List Clean Row ===== */
-    .song-container.list-view .song-card{
-        display:flex;
-        align-items:center;
-        gap:15px;
-        padding:14px 18px;
+    /* REMOVE PLAY BUTTON RANDOM POSITION ISSUE */
+    .play-overlay{
+        position:absolute;
+        bottom:10px;
+        right:10px;
+        transform:none;
     }
 
-    .song-container.list-view img{
-        width:65px;
-        height:65px;
-        border-radius:12px;
-    }
-
-    /* ===== Player Slim & Classy ===== */
+    /* PLAYER SLIM */
     .player{
-        padding:12px 15px;
+        padding:10px 14px;
     }
 
     .progress-bar{
-        height:4px;   /* slim */
+        height:3px;
     }
 
     .player-controls{
-        gap:14px;
-        margin-top:10px;
+        gap:12px;
+        margin-top:8px;
     }
 
     .player button{
         padding:6px 10px;
         font-size:13px;
-        border-radius:18px;
     }
 }
 </style>
@@ -1308,4 +1310,5 @@ searchInput.addEventListener("keyup",()=>{
 
 </body>
 </html>
+
 
