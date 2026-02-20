@@ -12,6 +12,7 @@
     padding:0;
     box-sizing:border-box;
     font-family:'Poppins',sans-serif;
+    -webkit-tap-highlight-color: transparent;
 }
 
 a{
@@ -23,6 +24,20 @@ body{
     background:linear-gradient(180deg,#121212,#1a1a1a);
     color:white;
     overflow-x:hidden;
+}
+
+/* REMOVE ANY AUTO LIGHT / FADE */
+.song-card{
+    opacity:1 !important;
+    filter:none !important;
+}
+
+/* REMOVE BLUE FOCUS FROM EVERYTHING */
+button,
+button:focus,
+button:active{
+    outline:none !important;
+    box-shadow:none !important;
 }
 
 /* Scrollbar */
@@ -113,7 +128,7 @@ body{
     gap:28px;
 }
 
-/* Liked list view */
+/* List view */
 .song-container.list-view{
     display:flex;
     flex-direction:column;
@@ -134,12 +149,10 @@ body{
     flex-shrink:0;
 }
 
-/* HIDE HEART IN LIKED VIEW */
 .song-container.list-view .like-btn{
     display:none;
 }
 
-/* FIX PLAY ALIGN IN LIST */
 .song-container.list-view .song-name{
     flex:1;
 }
@@ -168,6 +181,7 @@ body{
     margin-bottom:14px;
 }
 
+/* Desktop Hover Only */
 .song-card:hover{
     transform:translateY(-6px);
     box-shadow:0 12px 20px rgba(0,0,0,0.35);
@@ -186,7 +200,6 @@ body{
 .like-btn{
     margin-top:8px;
     font-size:18px;
-    display:inline-block;
     cursor:pointer;
 }
 
@@ -194,7 +207,7 @@ body{
     color:#1db954;
 }
 
-/* Card play button */
+/* Play button */
 .card-play{
     position:absolute;
     bottom:18px;
@@ -215,19 +228,19 @@ body{
     opacity:1;
 }
 
+/* Player */
 .player{
     position:fixed;
     bottom:0;
     left:0;
     width:100%;
     padding:12px 20px;
-
-    background:rgba(17,17,17,0.6);  /* transparent */
+    background:rgba(17,17,17,0.6);
     backdrop-filter:blur(15px);
     -webkit-backdrop-filter:blur(15px);
-
     border-top:1px solid rgba(255,255,255,0.1);
 }
+
 /* Progress Bar */
 #progressBar{
     -webkit-appearance:none;
@@ -235,7 +248,6 @@ body{
     height:4px;
     border-radius:50px;
     background:#2a2a2a;
-    outline:none;
     margin:14px 0 18px 0;
     cursor:pointer;
 }
@@ -263,6 +275,7 @@ body{
     background:#1e1e1e;
     color:white;
     cursor:pointer;
+    transition:0.2s;
 }
 
 .player button:hover{
@@ -276,8 +289,10 @@ body{
     .main{margin-left:70px;width:calc(100% - 70px);padding:25px;}
     .player{left:70px;width:calc(100% - 70px);}
 }
+
 /* Mobile */
 @media(max-width:768px){
+
     .sidebar{
         display:none;
     }
@@ -298,22 +313,25 @@ body{
         width:100%;
     }
 
-    /* REMOVE HOVER LIFT EFFECT */
-    .song-card:hover{
-        transform:none;
-        box-shadow:none;
+    /* NO ANIMATION ON MOBILE */
+    .song-card,
+    .song-card:hover,
+    .song-card:active{
+        transform:none !important;
+        box-shadow:0 4px 10px rgba(0,0,0,0.4) !important;
+        background:#181818 !important;
+        transition:none !important;
     }
 
-    /* Keep soft shadow only */
-    .song-card{
-        box-shadow:0 4px 10px rgba(0,0,0,0.4);
-    }
-
-    /* Play button always visible on mobile */
     .card-play{
         opacity:1;
+        transition:none !important;
     }
-}
+
+    .player button{
+        transition:none !important;
+    }
+}  
 </style>
 </head>
 
@@ -981,6 +999,7 @@ searchInput.addEventListener("keyup",()=>{
 
 </body>
 </html>
+
 
 
 
