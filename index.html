@@ -297,20 +297,6 @@ button:active{
 .song-card:hover .card-play{
     opacity:1;
 }
-
-/* Player */
-.player{
-    position:fixed;
-    bottom:0;
-    left:0;
-    width:100%;
-    padding:12px 20px;
-    background:rgba(17,17,17,0.6);
-    backdrop-filter:blur(15px);
-    -webkit-backdrop-filter:blur(15px);
-    border-top:1px solid rgba(255,255,255,0.1);
-}
-
 /* Progress Bar */
 #progressBar{
     -webkit-appearance:none;
@@ -548,13 +534,47 @@ button:active{
     justify-content:center;
     align-items:center;
 }
-button {
-  background: transparent !important;
-  box-shadow: none !important;
-  border: none !important;
-}
 button i {
   color: white;
+}
+/* REMOVE GREY GLASS BACKGROUND */
+.player-bar,
+.bottom-player,
+.now-playing {
+  background: #000 !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+/* ================= CLEAN CLASSY BUTTON FIX ================= */
+
+/* Bottom player buttons → pure black */
+.player-controls button{
+    background:#000 !important;
+    color:#fff !important;
+    border:1px solid #111;
+    box-shadow:none !important;
+}
+
+/* Hover pe bhi koi grey nahi */
+.player-controls button:hover{
+    background:#000 !important;
+    color:#fff !important;
+}
+
+/* Card play/pause button → NO GREY */
+.card-play{
+    background:#1db954 !important;   /* Spotify green */
+    box-shadow:none !important;
+}
+
+/* Card play hover bhi clean */
+.song-card:hover .card-play{
+    background:#1db954 !important;
+}
+
+/* Player bar stays transparent */
+.player{
+    background:transparent !important;
 }
 </style>
 </head>
@@ -1157,6 +1177,7 @@ searchInput.addEventListener("keyup",()=>{
 
 </body>
 </html>
+
 
 
 
