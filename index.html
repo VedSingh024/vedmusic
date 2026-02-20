@@ -7,6 +7,80 @@
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 
 <style>
+    /* ================= FULL SCREEN SEARCH (PC ONLY) ================= */
+
+.search-overlay{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,0.95);
+    backdrop-filter:blur(20px);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    z-index:9999;
+    opacity:0;
+    pointer-events:none;
+    transition:0.4s ease;
+}
+
+.search-overlay.active{
+    opacity:1;
+    pointer-events:all;
+}
+
+.search-overlay input{
+    width:70%;
+    max-width:800px;
+    padding:25px 40px;
+    font-size:28px;
+    border-radius:50px;
+    border:none;
+    background:#111;
+    color:white;
+    box-shadow:0 0 30px rgba(29,185,84,0.4);
+}
+
+.search-overlay input:focus{
+    outline:none;
+}
+
+/* PC only trigger */
+@media(min-width:769px){
+    .search-box input{
+        cursor:pointer;
+    }
+}
+
+/* ================= STYLISH PLAYER BUTTONS ================= */
+
+.player-controls button{
+    width:55px;
+    height:55px;
+    border-radius:50%;
+    border:none;
+    font-size:18px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:linear-gradient(145deg,#1a1a1a,#111);
+    box-shadow:
+        0 4px 15px rgba(0,0,0,0.5),
+        inset 0 1px 2px rgba(255,255,255,0.1);
+    transition:0.25s ease;
+}
+
+.player-controls button:hover{
+    transform:scale(1.1);
+    background:#1db954;
+    color:black;
+    box-shadow:0 0 20px rgba(29,185,84,0.6);
+}
+
+/* REMOVE BLUE FOCUS GLOW COMPLETELY */
+.player button:focus{
+    outline:none !important;
+    box-shadow:none !important;
+}
 *{
     margin:0;
     padding:0;
@@ -26,7 +100,13 @@ body{
     overflow-x:hidden;
 }
 
-/* Remove blue focus */
+/* REMOVE ANY AUTO LIGHT / FADE */
+.song-card{
+    opacity:1 !important;
+    filter:none !important;
+}
+
+/* REMOVE BLUE FOCUS FROM EVERYTHING */
 button,
 button:focus,
 button:active{
@@ -37,10 +117,12 @@ button:active{
 /* Scrollbar */
 ::-webkit-scrollbar{width:8px;}
 ::-webkit-scrollbar-track{background:#111;}
-::-webkit-scrollbar-thumb{background:#1db954;border-radius:10px;}
+::-webkit-scrollbar-thumb{
+    background:#1db954;
+    border-radius:10px;
+}
 
-/* ================= SIDEBAR ================= */
-
+/* Sidebar */
 .sidebar{
     width:230px;
     height:100vh;
@@ -60,55 +142,54 @@ button:active{
 }
 
 .main{
-    margin-left:230px;
-    width:calc(100% - 230px);
+    margin-left:0;
+    width:100%;
     padding:45px 45px 140px 45px;
 }
 
-/* ================= TOPBAR ================= */
-
+/* Topbar */
 .topbar{
     display:flex;
     flex-direction:column;
+    align-items:center;
     gap:20px;
     margin-bottom:40px;
 }
 
 .search-box{
     width:100%;
+    max-width:600px;
 }
 
 .search-box input{
     width:100%;
-    height:50px;
-    padding:0 20px;
-    border-radius:14px;
+    padding:12px 20px;
+    border-radius:25px;
     border:none;
     background:#1e1e1e;
     color:white;
-    font-size:15px;
 }
 
 .search-box input:focus{
-    box-shadow:0 0 8px #1db954;
+    outline:none;
+    box-shadow:0 0 10px #1db954;
 }
-
-/* Nav buttons */
 
 .nav-top{
     display:flex;
     gap:20px;
+    width:100%;
 }
 
 .nav-top button{
     flex:1;
-    padding:14px 0;
+    padding:12px 0;
     border:none;
-    border-radius:14px;
+    border-radius:20px;
     background:#1e1e1e;
     color:white;
     cursor:pointer;
-    transition:0.25s ease;
+    transition:0.3s;
 }
 
 .nav-top button:hover,
@@ -117,16 +198,14 @@ button:active{
     color:black;
 }
 
-/* ================= GRID ================= */
-
+/* Grid */
 .song-container{
     display:grid;
-    grid-template-columns:repeat(auto-fill,minmax(190px,1fr));
+    grid-template-columns:repeat(auto-fill,minmax(180px,1fr));
     gap:28px;
 }
 
 /* List view */
-
 .song-container.list-view{
     display:flex;
     flex-direction:column;
@@ -144,6 +223,7 @@ button:active{
     width:70px;
     height:70px;
     border-radius:12px;
+    flex-shrink:0;
 }
 
 .song-container.list-view .like-btn{
@@ -157,20 +237,19 @@ button:active{
 .song-container.list-view .card-play{
     position:static;
     opacity:1;
-    width:38px;
-    height:38px;
+    width:36px;
+    height:36px;
     font-size:14px;
     margin-left:auto;
 }
 
-/* ================= CARD ================= */
-
+/* Card */
 .song-card{
     background:#181818;
     padding:18px;
     border-radius:22px;
-    position:relative;
     transition:0.3s ease;
+    position:relative;
 }
 
 .song-card img{
@@ -179,6 +258,7 @@ button:active{
     margin-bottom:14px;
 }
 
+/* Desktop Hover Only */
 .song-card:hover{
     transform:translateY(-6px);
     box-shadow:0 12px 20px rgba(0,0,0,0.35);
@@ -205,116 +285,100 @@ button:active{
 }
 
 /* Play button */
-
 .card-play{
     position:absolute;
     bottom:18px;
     right:18px;
     background:#1db954;
-    width:45px;
-    height:45px;
+    width:40px;
+    height:40px;
     display:flex;
     align-items:center;
     justify-content:center;
     border-radius:50%;
-    font-size:16px;
+    font-size:15px;
     opacity:0;
-    transition:0.25s ease;
+    transition:0.25s;
 }
 
 .song-card:hover .card-play{
     opacity:1;
 }
 
-/* ================= PLAYER ================= */
-
+/* Player */
 .player{
     position:fixed;
     bottom:0;
-    left:230px;
-    width:calc(100% - 230px);
-    padding:15px 25px;
-    background:rgba(17,17,17,0.7);
-    backdrop-filter:blur(18px);
-    -webkit-backdrop-filter:blur(18px);
-    border-top:1px solid rgba(255,255,255,0.08);
+    left:0;
+    width:100%;
+    padding:12px 20px;
+    background:rgba(17,17,17,0.6);
+    backdrop-filter:blur(15px);
+    -webkit-backdrop-filter:blur(15px);
+    border-top:1px solid rgba(255,255,255,0.1);
 }
 
-/* Progress bar */
-
+/* Progress Bar */
 #progressBar{
     -webkit-appearance:none;
     width:100%;
     height:4px;
     border-radius:50px;
     background:#2a2a2a;
-    margin:15px 0 20px 0;
+    margin:14px 0 18px 0;
     cursor:pointer;
 }
 
 #progressBar::-webkit-slider-thumb{
     -webkit-appearance:none;
-    height:14px;
-    width:14px;
+    height:12px;
+    width:12px;
     border-radius:50%;
     background:#1db954;
-    margin-top:-5px;
+    margin-top:-4px;
 }
 
-/* Player controls */
-
+/* Player Controls */
 .player-controls{
     display:flex;
     justify-content:center;
-    align-items:center;
-    gap:20px;
+    gap:12px;
 }
 
 .player button{
-    background:#1a1a1a;
+    padding:6px 14px;
     border:none;
-    width:48px;
-    height:48px;
-    border-radius:50%;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    font-size:18px;
+    border-radius:20px;
+    background:#1e1e1e;
+    color:white;
     cursor:pointer;
-    transition:0.25s ease;
+    transition:0.2s;
 }
 
-#playPauseBtn{
-    width:60px;
-    height:60px;
-    font-size:22px;
+.player button:hover{
     background:#1db954;
     color:black;
 }
 
-/* ================= TABLET ================= */
-
+/* Tablet */
 @media(max-width:900px){
-
     .sidebar{width:70px;}
-
     .main{
         margin-left:70px;
         width:calc(100% - 70px);
         padding:25px;
     }
-
     .player{
         left:70px;
         width:calc(100% - 70px);
     }
 }
 
-/* ================= MOBILE ================= */
-
+/* Mobile */
 @media(max-width:768px){
-
-    .sidebar{display:none;}
+    .sidebar{
+        display:none;
+    }
 
     .main{
         margin-left:0;
@@ -332,10 +396,13 @@ button:active{
         width:100%;
     }
 
+    /* NO ANIMATION ON MOBILE */
     .song-card,
-    .song-card:hover{
+    .song-card:hover,
+    .song-card:active{
         transform:none !important;
         box-shadow:0 4px 10px rgba(0,0,0,0.4) !important;
+        background:#181818 !important;
         transition:none !important;
     }
 
@@ -700,7 +767,6 @@ button:active{
     <audio id="audioPlayer"></audio>
 </div>
 <script>
-
 const likedBtn = document.getElementById("likedBtn");
 const homeBtn = document.getElementById("homeBtn");
 const container = document.getElementById("songContainer");
@@ -728,7 +794,7 @@ saved.forEach(src => {
 });
 
 let currentIndex = -1;
-
+let isShuffle = false;
 
 /* LIKE BUTTON */
 document.querySelectorAll(".like-btn").forEach(btn=>{
@@ -737,7 +803,6 @@ document.querySelectorAll(".like-btn").forEach(btn=>{
         e.stopPropagation();
 
         const card = this.closest(".song-card");
-
         this.classList.toggle("liked");
 
         if(this.classList.contains("liked")){
@@ -754,7 +819,6 @@ document.querySelectorAll(".like-btn").forEach(btn=>{
         );
     });
 });
-
 
 function playSong(index){
     if(index < 0 || index >= cards.length) return;
@@ -776,111 +840,84 @@ function playSong(index){
     });
 
     cards[index].querySelector(".card-play").innerHTML = "❚❚";
-}
 
+    highlightPlaying(index);
+}
 
 /* CARD CLICK */
 cards.forEach((card, index)=>{
     card.addEventListener("click", function(e){
         e.preventDefault();
-
         if(e.target.classList.contains("like-btn")) return;
 
         if(currentIndex === index){
-            if(audioPlayer.paused){
-                audioPlayer.play();
-            } else {
-                audioPlayer.pause();
-            }
+            audioPlayer.paused ? audioPlayer.play() : audioPlayer.pause();
         } else {
             playSong(index);
         }
     });
 });
 
-
 /* PLAY PAUSE BUTTON */
 playPauseBtn.addEventListener("click", ()=>{
     if(currentIndex === -1) return;
-
-    if(audioPlayer.paused){
-        audioPlayer.play();
-    } else {
-        audioPlayer.pause();
-    }
+    audioPlayer.paused ? audioPlayer.play() : audioPlayer.pause();
 });
-
 
 audioPlayer.addEventListener("play", ()=>{
     playPauseBtn.innerHTML = "❚❚";
-
-    if(currentIndex !== -1){
-        const icon = cards[currentIndex].querySelector(".card-play");
-        if(icon) icon.innerHTML = "❚❚";
-    }
 });
 
 audioPlayer.addEventListener("pause", ()=>{
     playPauseBtn.innerHTML = "▶";
-
-    if(currentIndex !== -1){
-        const icon = cards[currentIndex].querySelector(".card-play");
-        if(icon) icon.innerHTML = "▶";
-    }
 });
 
-
-/* ✅ AUTO NEXT — SMART (HOME + LIKED) */
+/* ✅ SINGLE CLEAN AUTO NEXT */
 audioPlayer.addEventListener("ended", ()=>{
 
-    // Agar Liked list open hai
-    if(container.classList.contains("list-view")){
+    if(isShuffle){
+        const randomIndex = Math.floor(Math.random() * cards.length);
+        playSong(randomIndex);
+        return;
+    }
 
+    if(container.classList.contains("list-view")){
         const likedArray = cards.filter(card => likedSongs.has(card));
         const currentCard = cards[currentIndex];
         const likedIndex = likedArray.indexOf(currentCard);
 
         if(likedIndex !== -1 && likedArray.length > 0){
-
             const nextLiked = likedArray[(likedIndex + 1) % likedArray.length];
             const nextIndex = cards.indexOf(nextLiked);
-
             playSong(nextIndex);
             return;
         }
     }
 
-    // Normal Home playlist
     if(currentIndex < cards.length - 1){
         playSong(currentIndex + 1);
     } else {
         playSong(0);
     }
-
 });
-
 
 /* NEXT BUTTON */
 nextBtn.addEventListener("click", ()=>{
     audioPlayer.dispatchEvent(new Event("ended"));
 });
 
-
 /* PREVIOUS */
 prevBtn.addEventListener("click", ()=>{
     if(container.classList.contains("list-view")){
-
         const likedArray = cards.filter(card => likedSongs.has(card));
         const currentCard = cards[currentIndex];
         const likedIndex = likedArray.indexOf(currentCard);
 
         if(likedIndex !== -1 && likedArray.length > 0){
-
             const prevLiked = likedArray[
                 (likedIndex - 1 + likedArray.length) % likedArray.length
             ];
             const prevIndex = cards.indexOf(prevLiked);
-
             playSong(prevIndex);
             return;
         }
@@ -891,33 +928,23 @@ prevBtn.addEventListener("click", ()=>{
     }
 });
 
-
 /* SHOW LIKED */
 likedBtn.addEventListener("click",(e)=>{
     e.preventDefault();
-
     homeBtn.classList.remove("active-btn");
     likedBtn.classList.add("active-btn");
-
     container.classList.add("list-view");
 
     cards.forEach(card=>{
-        if(likedSongs.has(card)){
-            card.style.display="flex";
-        } else {
-            card.style.display="none";
-        }
+        card.style.display = likedSongs.has(card) ? "flex" : "none";
     });
 });
-
 
 /* SHOW HOME */
 homeBtn.addEventListener("click",(e)=>{
     e.preventDefault();
-
     likedBtn.classList.remove("active-btn");
-homeBtn.classList.add("active-btn");
-
+    homeBtn.classList.add("active-btn");
     container.classList.remove("list-view");
 
     cards.forEach(card=>{
@@ -925,7 +952,7 @@ homeBtn.classList.add("active-btn");
     });
 });
 
-
+/* PROGRESS BAR */
 const progressBar = document.getElementById("progressBar");
 
 audioPlayer.addEventListener("timeupdate", () => {
@@ -942,17 +969,16 @@ progressBar.addEventListener("input", () => {
     }
 });
 
+/* SHUFFLE */
 const shuffleBtn = document.getElementById("shuffleBtn");
-let isShuffle = false;
 
-/* SHUFFLE TOGGLE */
 shuffleBtn.addEventListener("click", ()=>{
     isShuffle = !isShuffle;
     shuffleBtn.style.background = isShuffle ? "#1db954" : "#222";
     shuffleBtn.style.color = isShuffle ? "black" : "#1db954";
 });
 
-/* MODIFY playSong FUNCTION GLOW + WAVE */
+/* WAVE EFFECT */
 function highlightPlaying(index){
     document.querySelectorAll(".song-card").forEach(c=>{
         c.classList.remove("playing");
@@ -966,55 +992,18 @@ function highlightPlaying(index){
     const wave = document.createElement("div");
     wave.className = "wave";
     wave.innerHTML = "<span></span><span></span><span></span>";
-
     card.appendChild(wave);
 }
-
-/* MODIFY existing playSong call */
-const originalPlaySong = playSong;
-playSong = function(index){
-    originalPlaySong(index);
-    highlightPlaying(index);
-};
-
-/* MODIFY AUTO NEXT FOR SHUFFLE */
-audioPlayer.addEventListener("ended", ()=>{
-
-    if(isShuffle){
-        const randomIndex = Math.floor(Math.random() * cards.length);
-        playSong(randomIndex);
-        return;
-    }
-});
-
-/* MINI PLAYER EXPAND ON CLICK */
-document.querySelector(".player").addEventListener("dblclick", ()=>{
-    document.querySelector(".player").classList.toggle("expanded");
-});
-/* SEARCH */
-searchInput.addEventListener("keyup",()=>{
-    const value = searchInput.value.toLowerCase();
-
-    cards.forEach(card=>{
-        const name = card.querySelector(".song-name").innerText.toLowerCase();
-        let show = name.includes(value);
-
-        if(container.classList.contains("list-view")){
-            show = show && likedSongs.has(card);
-        }
-
-        card.style.display = show
-            ? (container.classList.contains("list-view") ? "flex" : "block")
-            : "none";
-    });
-});
-
 </script>
 
-
+<!-- FULL SCREEN SEARCH OVERLAY -->
+<div class="search-overlay" id="searchOverlay">
+    <input type="text" id="bigSearch" placeholder="Search anything...">
+</div>
 
 </body>
 </html>
+
 
 
 
