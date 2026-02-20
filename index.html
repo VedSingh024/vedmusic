@@ -525,6 +525,29 @@ button:active{
         color:#ffffff !important;
     }
 }
+/* SHUFFLE ACTIVE STATE */
+#shuffleBtn.active{
+    background:#1db954 !important;
+    color:black !important;
+}
+/* CENTER ALIGN PLAYER CONTENT */
+.player{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+}
+
+#progressBar{
+    width:100%;
+    max-width:600px;
+    margin:8px auto 10px auto;
+}
+
+.player-controls{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
 </style>
 </head>
 
@@ -1098,8 +1121,7 @@ progressBar.addEventListener("input", () => {
 /* SHUFFLE TOGGLE */
 shuffleBtn.addEventListener("click", ()=>{
     isShuffle = !isShuffle;
-    shuffleBtn.style.background = isShuffle ? "#1db954" : "#222";
-    shuffleBtn.style.color = isShuffle ? "black" : "#1db954";
+    shuffleBtn.classList.toggle("active", isShuffle);
 });
 
 /* SEARCH */
@@ -1127,6 +1149,7 @@ searchInput.addEventListener("keyup",()=>{
 
 </body>
 </html>
+
 
 
 
