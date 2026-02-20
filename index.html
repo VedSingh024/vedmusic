@@ -106,8 +106,12 @@ body{
     filter:none !important;
 }
 
-button:focus{
-    outline:none;
+/* REMOVE BLUE FOCUS FROM EVERYTHING */
+button,
+button:focus,
+button:active{
+    outline:none !important;
+    box-shadow:none !important;
 }
 
 /* Scrollbar */
@@ -406,98 +410,10 @@ button:focus{
         opacity:1;
         transition:none !important;
     }
-}
-    /* ===== ULTRA CLEAN PREMIUM PLAYER CONTROLS ===== */
 
-.player-controls{
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    gap:18px;
-}
-
-/* All small buttons */
-.player-controls button{
-    width:48px;
-    height:48px;
-    border-radius:50%;
-    border:none;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    font-size:18px;
-    cursor:pointer;
-
-    background:#0e0e0e;
-    color:#e5e5e5;
-
-    /* Deep luxury shadow */
-    box-shadow:
-        0 12px 30px rgba(0,0,0,0.85),
-        inset 0 1px 1px rgba(255,255,255,0.04);
-
-    transition:background 0.2s ease, color 0.2s ease;
-}
-
-/* subtle hover */
-.player-controls button:hover{
-    background:#181818;
-    color:#ffffff;
-}
-
-/* MAIN PLAY BUTTON */
-#playPauseBtn{
-    width:62px;
-    height:62px;
-    font-size:20px;
-
-    background:#1db954;
-    color:#000;
-
-    box-shadow:
-        0 15px 35px rgba(0,0,0,0.95);
-}
-
-/* no flashy hover */
-#playPauseBtn:hover{
-    background:#1db954;
-}
-/* ===== FINAL PREMIUM PLAYER BUTTONS ===== */
-
-.player-controls{
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    gap:18px;
-}
-
-.player-controls button{
-    width:52px;
-    height:52px;
-    border-radius:50%;
-    border:none;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    font-size:18px;
-    cursor:pointer;
-
-    background:rgba(15,15,15,0.9);
-    color:#f5f5f5;
-
-    box-shadow:
-        0 10px 30px rgba(0,0,0,0.9),
-        inset 0 1px 1px rgba(255,255,255,0.05);
-}
-
-#playPauseBtn{
-    width:70px;
-    height:70px;
-    font-size:22px;
-    background:#1db954;
-    color:black;
-    box-shadow:
-        0 15px 40px rgba(0,0,0,1);
+    .player button{
+        transition:none !important;
+    }
 }
 </style>
 </head>
@@ -1101,4 +1017,5 @@ searchInput.addEventListener("keyup",()=>{
 
 </body>
 </html>
+
 
