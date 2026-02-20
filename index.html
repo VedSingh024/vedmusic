@@ -771,13 +771,11 @@ const likedBtn = document.getElementById("likedBtn");
 const homeBtn = document.getElementById("homeBtn");
 const container = document.getElementById("songContainer");
 const searchInput = document.getElementById("searchInput");
-
 const audioPlayer = document.getElementById("audioPlayer");
 const playPauseBtn = document.getElementById("playPauseBtn");
 const prevBtn = document.getElementById("prevBtn");
 const nextBtn = document.getElementById("nextBtn");
 const nowPlaying = document.getElementById("nowPlaying");
-
 const cards = Array.from(document.querySelectorAll(".song-card"));
 
 let likedSongs = new Set();
@@ -794,7 +792,6 @@ saved.forEach(src => {
 });
 
 let currentIndex = -1;
-let isShuffle = false;
 
 /* LIKE BUTTON */
 document.querySelectorAll(".like-btn").forEach(btn=>{
@@ -803,6 +800,7 @@ document.querySelectorAll(".like-btn").forEach(btn=>{
         e.stopPropagation();
 
         const card = this.closest(".song-card");
+
         this.classList.toggle("liked");
 
         if(this.classList.contains("liked")){
@@ -840,8 +838,6 @@ function playSong(index){
     });
 
     cards[index].querySelector(".card-play").innerHTML = "❚❚";
-
-    highlightPlaying(index);
 }
 
 /* CARD CLICK */
@@ -851,7 +847,11 @@ cards.forEach((card, index)=>{
         if(e.target.classList.contains("like-btn")) return;
 
         if(currentIndex === index){
-            audioPlayer.paused ? audioPlayer.play() : audioPlayer.pause();
+            if(audioPlayer.paused){
+                audioPlayer.play();
+            } else {
+                audioPlayer.pause();
+            }
         } else {
             playSong(index);
         }
@@ -861,18 +861,34 @@ cards.forEach((card, index)=>{
 /* PLAY PAUSE BUTTON */
 playPauseBtn.addEventListener("click", ()=>{
     if(currentIndex === -1) return;
-    audioPlayer.paused ? audioPlayer.play() : audioPlayer.pause();
+
+    if(audioPlayer.paused){
+        audioPlayer.play();
+    } else {
+        audioPlayer.pause();
+    }
 });
 
 audioPlayer.addEventListener("play", ()=>{
     playPauseBtn.innerHTML = "❚❚";
+    if(currentIndex !== -1){
+        const icon = cards[currentIndex].querySelector(".card-play");
+        if(icon) icon.innerHTML = "❚❚";
+    }
 });
 
 audioPlayer.addEventListener("pause", ()=>{
     playPauseBtn.innerHTML = "▶";
+    if(currentIndex !== -1){
+        const icon = cards[currentIndex].querySelector(".card-play");
+        if(icon) icon.innerHTML = "▶";
+    }
 });
 
-/* ✅ SINGLE CLEAN AUTO NEXT */
+/* ✅ SINGLE CLEAN AUTO NEXT (HOME + LIKED + SHUFFLE) */
+const shuffleBtn = document.getElementById("shuffleBtn");
+let isShuffle = false;
+
 audioPlayer.addEventListener("ended", ()=>{
 
     if(isShuffle){
@@ -952,50 +968,48 @@ homeBtn.addEventListener("click",(e)=>{
     });
 });
 
-/* PROGRESS BAR */
+/* PROGRESS */
 const progressBar = document.getElementById("progressBar");
 
 audioPlayer.addEventListener("timeupdate", () => {
     if(audioPlayer.duration){
-        const progress = (audioPlayer.currentTime / audioPlayer.duration) * 100;
-        progressBar.value = progress;
+        progressBar.value =
+        (audioPlayer.currentTime / audioPlayer.duration) * 100;
     }
 });
 
 progressBar.addEventListener("input", () => {
     if(audioPlayer.duration){
-        const seekTime = (progressBar.value / 100) * audioPlayer.duration;
-        audioPlayer.currentTime = seekTime;
+        audioPlayer.currentTime =
+        (progressBar.value / 100) * audioPlayer.duration;
     }
 });
 
-/* SHUFFLE */
-const shuffleBtn = document.getElementById("shuffleBtn");
-
+/* SHUFFLE TOGGLE */
 shuffleBtn.addEventListener("click", ()=>{
     isShuffle = !isShuffle;
     shuffleBtn.style.background = isShuffle ? "#1db954" : "#222";
     shuffleBtn.style.color = isShuffle ? "black" : "#1db954";
 });
 
-/* WAVE EFFECT */
-function highlightPlaying(index){
-    document.querySelectorAll(".song-card").forEach(c=>{
-        c.classList.remove("playing");
-        const wave = c.querySelector(".wave");
-        if(wave) wave.remove();
+/* SEARCH */
+searchInput.addEventListener("keyup",()=>{
+    const value = searchInput.value.toLowerCase();
+
+    cards.forEach(card=>{
+        const name = card.querySelector(".song-name").innerText.toLowerCase();
+        let show = name.includes(value);
+
+        if(container.classList.contains("list-view")){
+            show = show && likedSongs.has(card);
+        }
+
+        card.style.display =
+            show ? (container.classList.contains("list-view") ? "flex" : "block")
+            : "none";
     });
-
-    const card = cards[index];
-    card.classList.add("playing");
-
-    const wave = document.createElement("div");
-    wave.className = "wave";
-    wave.innerHTML = "<span></span><span></span><span></span>";
-    card.appendChild(wave);
-}
+});
 </script>
-
 <!-- FULL SCREEN SEARCH OVERLAY -->
 <div class="search-overlay" id="searchOverlay">
     <input type="text" id="bigSearch" placeholder="Search anything...">
@@ -1003,6 +1017,7 @@ function highlightPlaying(index){
 
 </body>
 </html>
+
 
 
 
