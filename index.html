@@ -587,18 +587,26 @@ button i {
     width:0%;
     background:#1db954;
     border-radius:10px;
-    transition:width 0.08s linear; /* smoother */
+    transition:none;   /* remove transition */
 }
 .mini-like{
     position:absolute;
-    top:6px;      /* 👈 shift up */
-    right:10px;
-    font-size:14px;
-    cursor:pointer;
-    color:#aaa;
+    top:6px;
+    right:8px;
+    font-size:11px;   /* smaller */
+    width:18px;
+    height:18px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border-radius:50%;
+    background:rgba(255,255,255,0.08);
+    transition:0.2s ease;
 }
+
 .mini-like.liked{
     color:#1db954;
+    background:rgba(29,185,84,0.15);
 }
 </style>
 </head>
@@ -1075,8 +1083,7 @@ cards.forEach((card, index)=>{
     card.addEventListener("click", function(e) {
 
         // Ignore progress or heart click
-        if(e.target.closest(".card-progress")) return;
-        if(e.target.closest(".mini-like")) return;
+        if(e.target.closest(".card-progress") && !e.target.closest(".mini-like")) return;
 
         if(currentIndex === index){
             audioPlayer.paused ? audioPlayer.play() : audioPlayer.pause();
@@ -1135,13 +1142,14 @@ cards.forEach((card, index)=>{
     let dragging = false;
 
     progress.addEventListener("pointerdown", (e)=>{
-        if(currentIndex !== index || !audioPlayer.duration) return;
-        dragging = true;
-        progress.setPointerCapture(e.pointerId);
-        seek(e);
-        e.stopPropagation();
-    });
+    if(e.target.closest(".mini-like")) return;
+    if(currentIndex !== index || !audioPlayer.duration) return;
 
+    dragging = true;
+    progress.setPointerCapture(e.pointerId);
+    seek(e);
+    e.stopPropagation();
+});
     progress.addEventListener("pointermove", (e)=>{
         if(!dragging) return;
         seek(e);
@@ -1192,7 +1200,23 @@ homeBtn.addEventListener("click",(e)=>{
         card.style.display="block";
     });
 });
+function smoothProgress(){
+    if(!audioPlayer.duration || currentIndex === -1) return;
 
+    const currentCard = cards[currentIndex];
+    const fill = currentCard.querySelector(".card-progress-fill");
+
+    if(fill){
+        const percent = (audioPlayer.currentTime / audioPlayer.duration) * 100;
+        fill.style.width = percent + "%";
+    }
+
+    requestAnimationFrame(smoothProgress);
+}
+
+audioPlayer.addEventListener("play", ()=>{
+    requestAnimationFrame(smoothProgress);
+});
 /* SEARCH */
 searchInput.addEventListener("keyup",()=>{
     const value = searchInput.value.toLowerCase();
@@ -1220,6 +1244,7 @@ searchInput.addEventListener("keyup",()=>{
 
 </body>
 </html>
+
 
 
 
