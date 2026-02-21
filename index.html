@@ -88,7 +88,7 @@ a{
 }
 
 body{
-    background:linear-gradient(180deg,#121212,#1a1a1a);
+    background:#121212;
     color:white;
     overflow-x:hidden;
 }
@@ -1171,13 +1171,43 @@ cards.forEach((card, index)=>{
 
 });
 
-/* AUTO NEXT */
 audioPlayer.addEventListener("ended", ()=>{
-    if(currentIndex < cards.length - 1){
-        playSong(currentIndex + 1);
-    } else {
-        playSong(0);
+
+    let nextIndex = currentIndex + 1;
+
+    while(nextIndex < cards.length){
+
+        const src = cards[nextIndex].getAttribute("data-audio");
+
+        if(container.classList.contains("list-view")){
+            if(likedSongs.has(src)){
+                playSong(nextIndex);
+                return;
+            }
+        } else {
+            playSong(nextIndex);
+            return;
+        }
+
+        nextIndex++;
     }
+
+    // restart from top
+    for(let i=0;i<cards.length;i++){
+
+        const src = cards[i].getAttribute("data-audio");
+
+        if(container.classList.contains("list-view")){
+            if(likedSongs.has(src)){
+                playSong(i);
+                return;
+            }
+        } else {
+            playSong(i);
+            return;
+        }
+    }
+
 });
 
 /* SHOW LIKED */
@@ -1244,6 +1274,7 @@ searchInput.addEventListener("keyup",()=>{
 
 </body>
 </html>
+
 
 
 
