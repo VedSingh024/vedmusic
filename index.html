@@ -977,20 +977,25 @@ button i {
     <audio id="audioPlayer"></audio>
 </div>
 <script>
+const container = document.getElementById("songContainer");
+const searchInput = document.getElementById("searchInput");
+const homeBtn = document.getElementById("homeBtn");
+const likedBtn = document.getElementById("likedBtn");
 
+const audioPlayer = document.getElementById("audioPlayer");
+const nowPlaying = document.getElementById("nowPlaying");
+const progressBar = document.getElementById("progressBar");
+
+const cards = Array.from(document.querySelectorAll(".song-card"));
 let likedSongs = new Set();
 const saved = JSON.parse(localStorage.getItem("likedSongs")) || [];
-
 saved.forEach(src => {
     const card = cards.find(c => c.getAttribute("data-audio") === src);
     if(card){
         likedSongs.add(card);
-        const btn = card.querySelector(".like-btn");
-        btn.classList.add("liked");
-        btn.textContent = "♥";
+        card.classList.add("liked");
     }
 });
-
 let currentIndex = -1;
 let lastTap = 0;
 
@@ -1000,17 +1005,35 @@ cards.forEach((card, index)=>{
 
         const now = Date.now();
         if(now - lastTap < 300){
-            card.classList.toggle("liked");
-        } else {
-            if(currentIndex === index){
-                audioPlayer.paused ? audioPlayer.play() : audioPlayer.pause();
-            } else {
-                playSong(index);
-            }
-        }
-        lastTap = now;
-    });
-});
+
+    // Double tap → Like / Unlike
+    const audioSrc = card.getAttribute("data-audio");
+
+    if(likedSongs.has(audioSrc)){
+        likedSongs.delete(audioSrc);
+        card.classList.remove("liked");
+    } else {
+        likedSongs.add(audioSrc);
+        card.classList.add("liked");
+    }
+
+    localStorage.setItem(
+        "likedSongs",
+        JSON.stringify(Array.from(likedSongs))
+    );
+
+} else {
+
+    // Single tap → Play / Pause
+    if(currentIndex === index){
+        audioPlayer.paused ? audioPlayer.play() : audioPlayer.pause();
+    } else {
+        playSong(index);
+    }
+
+}
+
+lastTap = now;
 function playSong(index){
     if(index < 0 || index >= cards.length) return;
 
@@ -1029,38 +1052,8 @@ function playSong(index){
     document.querySelectorAll(".card-play").forEach(icon=>{
         icon.innerHTML = "▶";
     });
-
-    cards[index].querySelector(".card-play").innerHTML = "❚❚";
 }
 
-/* CARD CLICK */
-cards.forEach((card, index)=>{
-    card.addEventListener("click", function(e){
-        e.preventDefault();
-        if(e.target.classList.contains("like-btn")) return;
-
-        if(currentIndex === index){
-            if(audioPlayer.paused){
-                audioPlayer.play();
-            } else {
-                audioPlayer.pause();
-            }
-        } else {
-            playSong(index);
-        }
-    });
-});
-
-/* PLAY PAUSE BUTTON */
-playPauseBtn.addEventListener("click", ()=>{
-    if(currentIndex === -1) return;
-
-    if(audioPlayer.paused){
-        audioPlayer.play();
-    } else {
-        audioPlayer.pause();
-    }
-});
 audioPlayer.addEventListener("play", ()=>{
     // kuch nahi, sirf audio chale
 });
@@ -1068,17 +1061,8 @@ audioPlayer.addEventListener("play", ()=>{
 audioPlayer.addEventListener("pause", ()=>{
     // kuch nahi
 });
-/* ✅ SINGLE CLEAN AUTO NEXT (HOME + LIKED + SHUFFLE) */
-const shuffleBtn = document.getElementById("shuffleBtn");
-let isShuffle = false;
 
 audioPlayer.addEventListener("ended", ()=>{
-
-    if(isShuffle){
-        const randomIndex = Math.floor(Math.random() * cards.length);
-        playSong(randomIndex);
-        return;
-    }
 
     if(container.classList.contains("list-view")){
         const likedArray = cards.filter(card => likedSongs.has(card));
@@ -1097,33 +1081,6 @@ audioPlayer.addEventListener("ended", ()=>{
         playSong(currentIndex + 1);
     } else {
         playSong(0);
-    }
-});
-
-/* NEXT BUTTON */
-nextBtn.addEventListener("click", ()=>{
-    audioPlayer.dispatchEvent(new Event("ended"));
-});
-
-/* PREVIOUS */
-prevBtn.addEventListener("click", ()=>{
-    if(container.classList.contains("list-view")){
-        const likedArray = cards.filter(card => likedSongs.has(card));
-        const currentCard = cards[currentIndex];
-        const likedIndex = likedArray.indexOf(currentCard);
-
-        if(likedIndex !== -1 && likedArray.length > 0){
-            const prevLiked = likedArray[
-                (likedIndex - 1 + likedArray.length) % likedArray.length
-            ];
-            const prevIndex = cards.indexOf(prevLiked);
-            playSong(prevIndex);
-            return;
-        }
-    }
-
-    if(currentIndex > 0){
-        playSong(currentIndex - 1);
     }
 });
 
@@ -1151,9 +1108,6 @@ homeBtn.addEventListener("click",(e)=>{
     });
 });
 
-/* PROGRESS */
-const progressBar = document.getElementById("progressBar");
-
 audioPlayer.addEventListener("timeupdate", () => {
     if(audioPlayer.duration){
         progressBar.value =
@@ -1166,12 +1120,6 @@ progressBar.addEventListener("input", () => {
         audioPlayer.currentTime =
         (progressBar.value / 100) * audioPlayer.duration;
     }
-});
-
-/* SHUFFLE TOGGLE */
-shuffleBtn.addEventListener("click", ()=>{
-    isShuffle = !isShuffle;
-    shuffleBtn.classList.toggle("active", isShuffle);
 });
 
 /* SEARCH */
@@ -1199,4 +1147,5 @@ searchInput.addEventListener("keyup",()=>{
 
 </body>
 </html>
+
 
