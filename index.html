@@ -1010,7 +1010,8 @@ function playSong(index){
     if(!audioSrc) return;
 
     audioPlayer.src = audioSrc;
-    audioPlayer.play();
+    audioPlayer.load();   // 🔥 important for mobile
+    audioPlayer.play().catch(()=>{});
 
     document.querySelectorAll(".card-progress-fill").forEach(f=>{
         f.style.width = "0%";
@@ -1020,10 +1021,13 @@ function playSong(index){
     nowPlaying.innerText = "Now Playing: " + songName;
 }
 
-/* CARD CLICK */
+/* CARD TAP (WORKS PC + MOBILE) */
 cards.forEach((card, index)=>{
-    card.addEventListener("click", (e)=>{
-        e.preventDefault();
+
+    card.addEventListener("pointerup", (e)=>{
+
+        // ❗ if progress clicked, ignore card tap
+        if(e.target.closest(".card-progress")) return;
 
         const now = Date.now();
 
@@ -1045,9 +1049,7 @@ cards.forEach((card, index)=>{
                 JSON.stringify(Array.from(likedSongs))
             );
 
-        } 
-        // SINGLE TAP = PLAY
-        else {
+        } else {
 
             if(currentIndex === index){
                 audioPlayer.paused ? audioPlayer.play() : audioPlayer.pause();
@@ -1059,6 +1061,7 @@ cards.forEach((card, index)=>{
 
         lastTap = now;
     });
+
 });
 
 /* CARD PROGRESS UPDATE */
@@ -1074,19 +1077,39 @@ audioPlayer.addEventListener("timeupdate", () => {
     }
 });
 
-/* CLICK TO SEEK */
-cards.forEach((card, index) => {
+/* REAL DRAG SEEK (PC + MOBILE) */
+cards.forEach((card, index)=>{
+
     const progress = card.querySelector(".card-progress");
+    if(!progress) return;
 
-    progress.addEventListener("click", (e) => {
+    let dragging = false;
+
+    progress.addEventListener("pointerdown", (e)=>{
         if(currentIndex !== index || !audioPlayer.duration) return;
-
-        const rect = progress.getBoundingClientRect();
-        const clickX = e.clientX - rect.left;
-        const percent = clickX / rect.width;
-
-        audioPlayer.currentTime = percent * audioPlayer.duration;
+        dragging = true;
+        updateSeek(e);
+        progress.setPointerCapture(e.pointerId);
     });
+
+    progress.addEventListener("pointermove", (e)=>{
+        if(!dragging) return;
+        updateSeek(e);
+    });
+
+    progress.addEventListener("pointerup", ()=>{
+        dragging = false;
+    });
+
+    function updateSeek(e){
+        const rect = progress.getBoundingClientRect();
+        const percent = Math.min(
+            Math.max((e.clientX - rect.left)/rect.width, 0),
+            1
+        );
+        audioPlayer.currentTime = percent * audioPlayer.duration;
+    }
+
 });
 
 /* AUTO NEXT */
@@ -1146,6 +1169,7 @@ searchInput.addEventListener("keyup",()=>{
 
 </body>
 </html>
+
 
 
 
