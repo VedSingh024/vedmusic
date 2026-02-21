@@ -398,10 +398,8 @@ button:active{
 
 /* Player container slimmer */
 .player{
-    padding:8px 14px;
-    height:auto;
+    padding:6px 10px;
 }
-
 /* Now playing text clean */
 .player-top{
     font-size:12px;
@@ -584,13 +582,24 @@ button i {
     margin-top:14px;
     overflow:hidden;
 }
-
 .card-progress-fill{
     height:100%;
     width:0%;
     background:#1db954;
     border-radius:10px;
-    transition:width 0.2s linear;
+    transition:width 0.08s linear; /* smoother */
+}
+.mini-like{
+    position:absolute;
+    top:12px;
+    right:12px;
+    font-size:14px;
+    cursor:pointer;
+    color:#aaa;
+}
+
+.mini-like.liked{
+    color:#1db954;
 }
 </style>
 </head>
@@ -620,6 +629,7 @@ button i {
     <div class="artist-name">The Ronettes</div>
     <div class="card-progress">
   <div class="card-progress-fill"></div>
+  <div class="mini-like">♡</div>
 </div>
 </a>
 
@@ -971,9 +981,7 @@ button i {
     <div class="player-top">
         <span id="nowPlaying">No song playing</span>
     </div>
-
-    <input type="range" id="progressBar" value="0" min="0" max="100" step="1">
-
+    
     <audio id="audioPlayer"></audio>
 </div>
 <script>
@@ -989,13 +997,15 @@ const cards = Array.from(document.querySelectorAll(".song-card"));
 
 let likedSongs = new Set(JSON.parse(localStorage.getItem("likedSongs")) || []);
 let currentIndex = -1;
-let lastTap = 0;
 
-/* APPLY SAVED LIKES */
+/* APPLY SAVED LIKES TO SMALL HEART */
 cards.forEach(card=>{
     const src = card.getAttribute("data-audio");
+    const heart = card.querySelector(".mini-like");
+
     if(likedSongs.has(src)){
-        card.classList.add("liked");
+        heart.classList.add("liked");
+        heart.innerHTML = "♥";
     }
 });
 
@@ -1010,9 +1020,11 @@ function playSong(index){
     if(!audioSrc) return;
 
     audioPlayer.src = audioSrc;
-    audioPlayer.load();   // 🔥 important for mobile
+    audioPlayer.load();
+
     audioPlayer.play().catch(()=>{});
 
+    // Reset all card progress
     document.querySelectorAll(".card-progress-fill").forEach(f=>{
         f.style.width = "0%";
     });
@@ -1021,50 +1033,51 @@ function playSong(index){
     nowPlaying.innerText = "Now Playing: " + songName;
 }
 
-/* CARD TAP (WORKS PC + MOBILE) */
+/* CARD CLICK = PLAY / PAUSE ONLY */
 cards.forEach((card, index)=>{
 
     card.addEventListener("pointerup", (e)=>{
 
-        // ❗ if progress clicked, ignore card tap
+        // Ignore progress or heart click
         if(e.target.closest(".card-progress")) return;
+        if(e.target.closest(".mini-like")) return;
 
-        const now = Date.now();
-
-        // DOUBLE TAP = LIKE
-        if(now - lastTap < 300){
-
-            const src = card.getAttribute("data-audio");
-
-            if(likedSongs.has(src)){
-                likedSongs.delete(src);
-                card.classList.remove("liked");
-            } else {
-                likedSongs.add(src);
-                card.classList.add("liked");
-            }
-
-            localStorage.setItem(
-                "likedSongs",
-                JSON.stringify(Array.from(likedSongs))
-            );
-
+        if(currentIndex === index){
+            audioPlayer.paused ? audioPlayer.play() : audioPlayer.pause();
         } else {
-
-            if(currentIndex === index){
-                audioPlayer.paused ? audioPlayer.play() : audioPlayer.pause();
-            } else {
-                playSong(index);
-            }
-
+            playSong(index);
         }
 
-        lastTap = now;
     });
 
 });
 
-/* CARD PROGRESS UPDATE */
+/* SMALL HEART LIKE BUTTON */
+cards.forEach(card=>{
+    const heart = card.querySelector(".mini-like");
+    const src = card.getAttribute("data-audio");
+
+    heart.addEventListener("click",(e)=>{
+        e.stopPropagation();
+
+        if(likedSongs.has(src)){
+            likedSongs.delete(src);
+            heart.classList.remove("liked");
+            heart.innerHTML = "♡";
+        } else {
+            likedSongs.add(src);
+            heart.classList.add("liked");
+            heart.innerHTML = "♥";
+        }
+
+        localStorage.setItem(
+            "likedSongs",
+            JSON.stringify(Array.from(likedSongs))
+        );
+    });
+});
+
+/* SMOOTH CARD PROGRESS UPDATE */
 audioPlayer.addEventListener("timeupdate", () => {
     if(!audioPlayer.duration || currentIndex === -1) return;
 
@@ -1077,7 +1090,7 @@ audioPlayer.addEventListener("timeupdate", () => {
     }
 });
 
-/* REAL DRAG SEEK (PC + MOBILE) */
+/* REAL DRAG SEEK (ALL DEVICES SAFE) */
 cards.forEach((card, index)=>{
 
     const progress = card.querySelector(".card-progress");
@@ -1088,23 +1101,25 @@ cards.forEach((card, index)=>{
     progress.addEventListener("pointerdown", (e)=>{
         if(currentIndex !== index || !audioPlayer.duration) return;
         dragging = true;
-        updateSeek(e);
         progress.setPointerCapture(e.pointerId);
+        seek(e);
+        e.stopPropagation();
     });
 
     progress.addEventListener("pointermove", (e)=>{
         if(!dragging) return;
-        updateSeek(e);
+        seek(e);
     });
 
-    progress.addEventListener("pointerup", ()=>{
+    progress.addEventListener("pointerup", (e)=>{
         dragging = false;
+        progress.releasePointerCapture(e.pointerId);
     });
 
-    function updateSeek(e){
+    function seek(e){
         const rect = progress.getBoundingClientRect();
         const percent = Math.min(
-            Math.max((e.clientX - rect.left)/rect.width, 0),
+            Math.max((e.clientX - rect.left) / rect.width, 0),
             1
         );
         audioPlayer.currentTime = percent * audioPlayer.duration;
@@ -1169,6 +1184,7 @@ searchInput.addEventListener("keyup",()=>{
 
 </body>
 </html>
+
 
 
 
