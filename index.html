@@ -984,23 +984,20 @@ const likedBtn = document.getElementById("likedBtn");
 
 const audioPlayer = document.getElementById("audioPlayer");
 const nowPlaying = document.getElementById("nowPlaying");
-const progressBar = document.getElementById("progressBar");
 
 const cards = Array.from(document.querySelectorAll(".song-card"));
 
-let likedSongs = new Set();
-const saved = JSON.parse(localStorage.getItem("likedSongs")) || [];
+let likedSongs = new Set(JSON.parse(localStorage.getItem("likedSongs")) || []);
+let currentIndex = -1;
+let lastTap = 0;
 
-saved.forEach(src => {
-    likedSongs.add(src);
-    const card = cards.find(c => c.getAttribute("data-audio") === src);
-    if(card){
+/* APPLY SAVED LIKES */
+cards.forEach(card=>{
+    const src = card.getAttribute("data-audio");
+    if(likedSongs.has(src)){
         card.classList.add("liked");
     }
 });
-
-let currentIndex = -1;
-let lastTap = 0;
 
 /* PLAY FUNCTION */
 function playSong(index){
@@ -1015,18 +1012,13 @@ function playSong(index){
     audioPlayer.src = audioSrc;
     audioPlayer.play();
 
-    // Reset all card progress
     document.querySelectorAll(".card-progress-fill").forEach(f=>{
         f.style.width = "0%";
     });
 
     currentIndex = index;
-
     nowPlaying.innerText = "Now Playing: " + songName;
-
-    document.querySelectorAll(".card-play").forEach(icon=>{
-        icon.innerHTML = "▶";
-    });
+}
 
 /* CARD CLICK */
 cards.forEach((card, index)=>{
@@ -1035,15 +1027,16 @@ cards.forEach((card, index)=>{
 
         const now = Date.now();
 
+        // DOUBLE TAP = LIKE
         if(now - lastTap < 300){
 
-            const audioSrc = card.getAttribute("data-audio");
+            const src = card.getAttribute("data-audio");
 
-            if(likedSongs.has(audioSrc)){
-                likedSongs.delete(audioSrc);
+            if(likedSongs.has(src)){
+                likedSongs.delete(src);
                 card.classList.remove("liked");
             } else {
-                likedSongs.add(audioSrc);
+                likedSongs.add(src);
                 card.classList.add("liked");
             }
 
@@ -1052,7 +1045,9 @@ cards.forEach((card, index)=>{
                 JSON.stringify(Array.from(likedSongs))
             );
 
-        } else {
+        } 
+        // SINGLE TAP = PLAY
+        else {
 
             if(currentIndex === index){
                 audioPlayer.paused ? audioPlayer.play() : audioPlayer.pause();
@@ -1066,65 +1061,7 @@ cards.forEach((card, index)=>{
     });
 });
 
-/* AUTO NEXT */
-audioPlayer.addEventListener("ended", ()=>{
-
-    if(container.classList.contains("list-view")){
-        const likedArray = cards.filter(card => 
-            likedSongs.has(card.getAttribute("data-audio"))
-        );
-
-        const currentCard = cards[currentIndex];
-        const likedIndex = likedArray.indexOf(currentCard);
-
-        if(likedIndex !== -1 && likedArray.length > 0){
-            const nextLiked = likedArray[(likedIndex + 1) % likedArray.length];
-            const nextIndex = cards.indexOf(nextLiked);
-            playSong(nextIndex);
-            return;
-        }
-    }
-
-    if(currentIndex < cards.length - 1){
-        playSong(currentIndex + 1);
-    } else {
-        playSong(0);
-    }
-});
-
-/* SHOW LIKED */
-likedBtn.addEventListener("click",(e)=>{
-    e.preventDefault();
-    homeBtn.classList.remove("active-btn");
-    likedBtn.classList.add("active-btn");
-    container.classList.add("list-view");
-
-    cards.forEach(card=>{
-        const audioSrc = card.getAttribute("data-audio");
-        card.style.display = likedSongs.has(audioSrc) ? "flex" : "none";
-    });
-});
-
-/* SHOW HOME */
-homeBtn.addEventListener("click",(e)=>{
-    e.preventDefault();
-    likedBtn.classList.remove("active-btn");
-    homeBtn.classList.add("active-btn");
-    container.classList.remove("list-view");
-
-    cards.forEach(card=>{
-        card.style.display="block";
-    });
-});
-
-/* BOTTOM PROGRESS BAR */
-audioPlayer.addEventListener("timeupdate", () => {
-    if(audioPlayer.duration){
-        progressBar.value =
-        (audioPlayer.currentTime / audioPlayer.duration) * 100;
-    }
-});
-/* CARD PROGRESS UPDATE (WORKS ON ALL DEVICES) */
+/* CARD PROGRESS UPDATE */
 audioPlayer.addEventListener("timeupdate", () => {
     if(!audioPlayer.duration || currentIndex === -1) return;
 
@@ -1136,13 +1073,8 @@ audioPlayer.addEventListener("timeupdate", () => {
         fill.style.width = percent + "%";
     }
 });
-progressBar.addEventListener("input", () => {
-    if(audioPlayer.duration){
-        audioPlayer.currentTime =
-        (progressBar.value / 100) * audioPlayer.duration;
-    }
-});
-/* CLICK TO SEEK (CARD PROGRESS DRAG) */
+
+/* CLICK TO SEEK */
 cards.forEach((card, index) => {
     const progress = card.querySelector(".card-progress");
 
@@ -1156,18 +1088,49 @@ cards.forEach((card, index) => {
         audioPlayer.currentTime = percent * audioPlayer.duration;
     });
 });
+
+/* AUTO NEXT */
+audioPlayer.addEventListener("ended", ()=>{
+    if(currentIndex < cards.length - 1){
+        playSong(currentIndex + 1);
+    } else {
+        playSong(0);
+    }
+});
+
+/* SHOW LIKED */
+likedBtn.addEventListener("click",(e)=>{
+    e.preventDefault();
+    container.classList.add("list-view");
+
+    cards.forEach(card=>{
+        const src = card.getAttribute("data-audio");
+        card.style.display = likedSongs.has(src) ? "flex" : "none";
+    });
+});
+
+/* SHOW HOME */
+homeBtn.addEventListener("click",(e)=>{
+    e.preventDefault();
+    container.classList.remove("list-view");
+
+    cards.forEach(card=>{
+        card.style.display="block";
+    });
+});
+
 /* SEARCH */
 searchInput.addEventListener("keyup",()=>{
     const value = searchInput.value.toLowerCase();
 
     cards.forEach(card=>{
         const name = card.querySelector(".song-name").innerText.toLowerCase();
-        const audioSrc = card.getAttribute("data-audio");
+        const src = card.getAttribute("data-audio");
 
         let show = name.includes(value);
 
         if(container.classList.contains("list-view")){
-            show = show && likedSongs.has(audioSrc);
+            show = show && likedSongs.has(src);
         }
 
         card.style.display =
@@ -1183,6 +1146,7 @@ searchInput.addEventListener("keyup",()=>{
 
 </body>
 </html>
+
 
 
 
