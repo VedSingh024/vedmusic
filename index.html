@@ -578,7 +578,7 @@ button i {
 }
 .card-progress{
     width:100%;
-    height:4px;
+    height:8px;
     background:rgba(255,255,255,0.12);
     border-radius:10px;
     margin-top:14px;
@@ -1014,10 +1014,12 @@ function playSong(index){
 
     audioPlayer.src = audioSrc;
     audioPlayer.play();
+
     // Reset all card progress
-document.querySelectorAll(".card-progress-fill").forEach(f=>{
-    f.style.width = "0%";
-});
+    document.querySelectorAll(".card-progress-fill").forEach(f=>{
+        f.style.width = "0%";
+    });
+
     currentIndex = index;
 
     nowPlaying.innerText = "Now Playing: " + songName;
@@ -1025,6 +1027,26 @@ document.querySelectorAll(".card-progress-fill").forEach(f=>{
     document.querySelectorAll(".card-play").forEach(icon=>{
         icon.innerHTML = "▶";
     });
+
+    // 🔥 Smooth progress start
+    requestAnimationFrame(updateCardProgress);
+}
+
+/* SMOOTH CARD PROGRESS */
+function updateCardProgress(){
+    if(!audioPlayer.duration || currentIndex === -1) return;
+
+    const currentCard = cards[currentIndex];
+    const fill = currentCard.querySelector(".card-progress-fill");
+
+    if(fill){
+        const percent = (audioPlayer.currentTime / audioPlayer.duration) * 100;
+        fill.style.width = percent + "%";
+    }
+
+    if(!audioPlayer.paused){
+        requestAnimationFrame(updateCardProgress);
+    }
 }
 
 /* CARD CLICK */
@@ -1116,7 +1138,7 @@ homeBtn.addEventListener("click",(e)=>{
     });
 });
 
-/* PROGRESS BAR */
+/* BOTTOM PROGRESS BAR */
 audioPlayer.addEventListener("timeupdate", () => {
     if(audioPlayer.duration){
         progressBar.value =
@@ -1130,18 +1152,7 @@ progressBar.addEventListener("input", () => {
         (progressBar.value / 100) * audioPlayer.duration;
     }
 });
-/* CARD PROGRESS UPDATE */
-audioPlayer.addEventListener("timeupdate", () => {
-    if(!audioPlayer.duration || currentIndex === -1) return;
 
-    const currentCard = cards[currentIndex];
-    const fill = currentCard.querySelector(".card-progress-fill");
-
-    if(fill){
-        const percent = (audioPlayer.currentTime / audioPlayer.duration) * 100;
-        fill.style.width = percent + "%";
-    }
-});
 /* SEARCH */
 searchInput.addEventListener("keyup",()=>{
     const value = searchInput.value.toLowerCase();
@@ -1169,6 +1180,7 @@ searchInput.addEventListener("keyup",()=>{
 
 </body>
 </html>
+
 
 
 
