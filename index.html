@@ -987,53 +987,22 @@ const nowPlaying = document.getElementById("nowPlaying");
 const progressBar = document.getElementById("progressBar");
 
 const cards = Array.from(document.querySelectorAll(".song-card"));
+
 let likedSongs = new Set();
 const saved = JSON.parse(localStorage.getItem("likedSongs")) || [];
+
 saved.forEach(src => {
+    likedSongs.add(src);
     const card = cards.find(c => c.getAttribute("data-audio") === src);
     if(card){
-        likedSongs.add(card);
         card.classList.add("liked");
     }
 });
+
 let currentIndex = -1;
 let lastTap = 0;
 
-cards.forEach((card, index)=>{
-    card.addEventListener("click", (e)=>{
-        e.preventDefault();
-
-        const now = Date.now();
-        if(now - lastTap < 300){
-
-    // Double tap → Like / Unlike
-    const audioSrc = card.getAttribute("data-audio");
-
-    if(likedSongs.has(audioSrc)){
-        likedSongs.delete(audioSrc);
-        card.classList.remove("liked");
-    } else {
-        likedSongs.add(audioSrc);
-        card.classList.add("liked");
-    }
-
-    localStorage.setItem(
-        "likedSongs",
-        JSON.stringify(Array.from(likedSongs))
-    );
-
-} else {
-
-    // Single tap → Play / Pause
-    if(currentIndex === index){
-        audioPlayer.paused ? audioPlayer.play() : audioPlayer.pause();
-    } else {
-        playSong(index);
-    }
-
-}
-
-lastTap = now;
+/* PLAY FUNCTION */
 function playSong(index){
     if(index < 0 || index >= cards.length) return;
 
@@ -1054,18 +1023,52 @@ function playSong(index){
     });
 }
 
-audioPlayer.addEventListener("play", ()=>{
-    // kuch nahi, sirf audio chale
+/* CARD CLICK */
+cards.forEach((card, index)=>{
+    card.addEventListener("click", (e)=>{
+        e.preventDefault();
+
+        const now = Date.now();
+
+        if(now - lastTap < 300){
+
+            const audioSrc = card.getAttribute("data-audio");
+
+            if(likedSongs.has(audioSrc)){
+                likedSongs.delete(audioSrc);
+                card.classList.remove("liked");
+            } else {
+                likedSongs.add(audioSrc);
+                card.classList.add("liked");
+            }
+
+            localStorage.setItem(
+                "likedSongs",
+                JSON.stringify(Array.from(likedSongs))
+            );
+
+        } else {
+
+            if(currentIndex === index){
+                audioPlayer.paused ? audioPlayer.play() : audioPlayer.pause();
+            } else {
+                playSong(index);
+            }
+
+        }
+
+        lastTap = now;
+    });
 });
 
-audioPlayer.addEventListener("pause", ()=>{
-    // kuch nahi
-});
-
+/* AUTO NEXT */
 audioPlayer.addEventListener("ended", ()=>{
 
     if(container.classList.contains("list-view")){
-        const likedArray = cards.filter(card => likedSongs.has(card));
+        const likedArray = cards.filter(card => 
+            likedSongs.has(card.getAttribute("data-audio"))
+        );
+
         const currentCard = cards[currentIndex];
         const likedIndex = likedArray.indexOf(currentCard);
 
@@ -1092,7 +1095,8 @@ likedBtn.addEventListener("click",(e)=>{
     container.classList.add("list-view");
 
     cards.forEach(card=>{
-        card.style.display = likedSongs.has(card) ? "flex" : "none";
+        const audioSrc = card.getAttribute("data-audio");
+        card.style.display = likedSongs.has(audioSrc) ? "flex" : "none";
     });
 });
 
@@ -1108,6 +1112,7 @@ homeBtn.addEventListener("click",(e)=>{
     });
 });
 
+/* PROGRESS BAR */
 audioPlayer.addEventListener("timeupdate", () => {
     if(audioPlayer.duration){
         progressBar.value =
@@ -1128,10 +1133,12 @@ searchInput.addEventListener("keyup",()=>{
 
     cards.forEach(card=>{
         const name = card.querySelector(".song-name").innerText.toLowerCase();
+        const audioSrc = card.getAttribute("data-audio");
+
         let show = name.includes(value);
 
         if(container.classList.contains("list-view")){
-            show = show && likedSongs.has(card);
+            show = show && likedSongs.has(audioSrc);
         }
 
         card.style.display =
@@ -1147,5 +1154,6 @@ searchInput.addEventListener("keyup",()=>{
 
 </body>
 </html>
+
 
 
