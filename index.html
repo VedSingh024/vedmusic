@@ -1014,6 +1014,10 @@ function playSong(index){
 
     audioPlayer.src = audioSrc;
     audioPlayer.play();
+    // Reset all card progress
+document.querySelectorAll(".card-progress-fill").forEach(f=>{
+    f.style.width = "0%";
+});
     currentIndex = index;
 
     nowPlaying.innerText = "Now Playing: " + songName;
@@ -1126,7 +1130,18 @@ progressBar.addEventListener("input", () => {
         (progressBar.value / 100) * audioPlayer.duration;
     }
 });
+/* CARD PROGRESS UPDATE */
+audioPlayer.addEventListener("timeupdate", () => {
+    if(!audioPlayer.duration || currentIndex === -1) return;
 
+    const currentCard = cards[currentIndex];
+    const fill = currentCard.querySelector(".card-progress-fill");
+
+    if(fill){
+        const percent = (audioPlayer.currentTime / audioPlayer.duration) * 100;
+        fill.style.width = percent + "%";
+    }
+});
 /* SEARCH */
 searchInput.addEventListener("keyup",()=>{
     const value = searchInput.value.toLowerCase();
@@ -1154,6 +1169,7 @@ searchInput.addEventListener("keyup",()=>{
 
 </body>
 </html>
+
 
 
 
