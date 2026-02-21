@@ -606,6 +606,18 @@ button i {
     color:#1db954;
     background:rgba(29,185,84,0.15);
 }
+    .player-top{
+    width:100%;
+    text-align:center;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+    @media(max-width:768px){
+    .search-box input{
+        font-size:16px !important;
+    }
+}
 </style>
 </head>
 
@@ -1162,17 +1174,19 @@ cards.forEach((card, index)=>{
     });
 
     function seek(e){
-        const rect = progress.getBoundingClientRect();
-        const x = e.clientX;  // pointer event me ye hi kaafi hai
+    const rect = progress.getBoundingClientRect();
+    const x = e.clientX || e.touches?.[0]?.clientX;
 
-        const percent = Math.min(
-            Math.max((x - rect.left) / rect.width, 0),
-            1
-        );
+    let percent = (x - rect.left) / rect.width;
+    percent = Math.max(0, Math.min(1, percent));
 
-        audioPlayer.currentTime = percent * audioPlayer.duration;
+    audioPlayer.currentTime = percent * audioPlayer.duration;
+
+    const fill = progress.querySelector(".card-progress-fill");
+    if(fill){
+        fill.style.width = (percent * 100) + "%";
     }
-
+}
 });
 
 audioPlayer.addEventListener("ended", ()=>{
@@ -1214,9 +1228,12 @@ audioPlayer.addEventListener("ended", ()=>{
 
 });
 
-/* SHOW LIKED */
 likedBtn.addEventListener("click",(e)=>{
     e.preventDefault();
+
+    likedBtn.classList.add("active-btn");
+    homeBtn.classList.remove("active-btn");
+
     container.classList.add("list-view");
 
     cards.forEach(card=>{
@@ -1225,9 +1242,12 @@ likedBtn.addEventListener("click",(e)=>{
     });
 });
 
-/* SHOW HOME */
 homeBtn.addEventListener("click",(e)=>{
     e.preventDefault();
+
+    homeBtn.classList.add("active-btn");
+    likedBtn.classList.remove("active-btn");
+
     container.classList.remove("list-view");
 
     cards.forEach(card=>{
@@ -1304,6 +1324,7 @@ searchInput.addEventListener("keyup",()=>{
 
 </body>
 </html>
+
 
 
 
