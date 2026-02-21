@@ -137,9 +137,8 @@ button:active{
 .main{
     margin-left:0;
     width:100%;
-    padding:45px 45px 140px 45px;
+    padding:45px 45px 20px 45px;   /* bottom padding kam */
 }
-
 /* Topbar */
 .topbar{
     display:flex;
@@ -362,9 +361,8 @@ button:active{
     .main{
         margin-left:0;
         width:100%;
-        padding:20px 15px 120px 15px;
+        padding:20px 15px 20px 15px;   /* 120px hata diya */
     }
-
     .song-container{
         grid-template-columns:repeat(2,1fr);
         gap:14px;
@@ -1139,17 +1137,20 @@ cards.forEach((card, index)=>{
     const progress = card.querySelector(".card-progress");
     if(!progress) return;
 
+    progress.style.touchAction = "none";   // 👈 YE LINE ADD KARNI HAI
+
     let dragging = false;
 
     progress.addEventListener("pointerdown", (e)=>{
-    if(e.target.closest(".mini-like")) return;
-    if(currentIndex !== index || !audioPlayer.duration) return;
+        if(e.target.closest(".mini-like")) return;
+        if(currentIndex !== index || !audioPlayer.duration) return;
 
-    dragging = true;
-    progress.setPointerCapture(e.pointerId);
-    seek(e);
-    e.stopPropagation();
-});
+        dragging = true;
+        progress.setPointerCapture(e.pointerId);
+        seek(e);
+        e.stopPropagation();
+    });
+
     progress.addEventListener("pointermove", (e)=>{
         if(!dragging) return;
         seek(e);
@@ -1162,10 +1163,13 @@ cards.forEach((card, index)=>{
 
     function seek(e){
         const rect = progress.getBoundingClientRect();
+        const x = e.clientX;  // pointer event me ye hi kaafi hai
+
         const percent = Math.min(
-            Math.max((e.clientX - rect.left) / rect.width, 0),
+            Math.max((x - rect.left) / rect.width, 0),
             1
         );
+
         audioPlayer.currentTime = percent * audioPlayer.duration;
     }
 
@@ -1247,6 +1251,32 @@ function smoothProgress(){
 audioPlayer.addEventListener("play", ()=>{
     requestAnimationFrame(smoothProgress);
 });
+    likedBtn.addEventListener("click",(e)=>{
+    e.preventDefault();
+
+    likedBtn.classList.add("active-btn");
+    homeBtn.classList.remove("active-btn");
+
+    container.classList.add("list-view");
+
+    cards.forEach(card=>{
+        const src = card.getAttribute("data-audio");
+        card.style.display = likedSongs.has(src) ? "flex" : "none";
+    });
+});
+
+homeBtn.addEventListener("click",(e)=>{
+    e.preventDefault();
+
+    homeBtn.classList.add("active-btn");
+    likedBtn.classList.remove("active-btn");
+
+    container.classList.remove("list-view");
+
+    cards.forEach(card=>{
+        card.style.display="block";
+    });
+});
 /* SEARCH */
 searchInput.addEventListener("keyup",()=>{
     const value = searchInput.value.toLowerCase();
@@ -1274,6 +1304,7 @@ searchInput.addEventListener("keyup",()=>{
 
 </body>
 </html>
+
 
 
 
