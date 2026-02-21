@@ -1028,27 +1028,6 @@ function playSong(index){
         icon.innerHTML = "▶";
     });
 
-    // 🔥 Smooth progress start
-    requestAnimationFrame(updateCardProgress);
-}
-
-/* SMOOTH CARD PROGRESS */
-function updateCardProgress(){
-    if(!audioPlayer.duration || currentIndex === -1) return;
-
-    const currentCard = cards[currentIndex];
-    const fill = currentCard.querySelector(".card-progress-fill");
-
-    if(fill){
-        const percent = (audioPlayer.currentTime / audioPlayer.duration) * 100;
-        fill.style.width = percent + "%";
-    }
-
-    if(!audioPlayer.paused){
-        requestAnimationFrame(updateCardProgress);
-    }
-}
-
 /* CARD CLICK */
 cards.forEach((card, index)=>{
     card.addEventListener("click", (e)=>{
@@ -1145,14 +1124,38 @@ audioPlayer.addEventListener("timeupdate", () => {
         (audioPlayer.currentTime / audioPlayer.duration) * 100;
     }
 });
+/* CARD PROGRESS UPDATE (WORKS ON ALL DEVICES) */
+audioPlayer.addEventListener("timeupdate", () => {
+    if(!audioPlayer.duration || currentIndex === -1) return;
 
+    const currentCard = cards[currentIndex];
+    const fill = currentCard.querySelector(".card-progress-fill");
+
+    if(fill){
+        const percent = (audioPlayer.currentTime / audioPlayer.duration) * 100;
+        fill.style.width = percent + "%";
+    }
+});
 progressBar.addEventListener("input", () => {
     if(audioPlayer.duration){
         audioPlayer.currentTime =
         (progressBar.value / 100) * audioPlayer.duration;
     }
 });
+/* CLICK TO SEEK (CARD PROGRESS DRAG) */
+cards.forEach((card, index) => {
+    const progress = card.querySelector(".card-progress");
 
+    progress.addEventListener("click", (e) => {
+        if(currentIndex !== index || !audioPlayer.duration) return;
+
+        const rect = progress.getBoundingClientRect();
+        const clickX = e.clientX - rect.left;
+        const percent = clickX / rect.width;
+
+        audioPlayer.currentTime = percent * audioPlayer.duration;
+    });
+});
 /* SEARCH */
 searchInput.addEventListener("keyup",()=>{
     const value = searchInput.value.toLowerCase();
@@ -1180,6 +1183,7 @@ searchInput.addEventListener("keyup",()=>{
 
 </body>
 </html>
+
 
 
 
