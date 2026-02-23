@@ -137,7 +137,7 @@ button:active{
 .main{
     margin-left:0;
     width:100%;
-    padding:45px 45px 0px 45px;
+    padding:45px 45px 90px 45px; /* bottom space for player */
 }
 /* Topbar */
 .topbar{
@@ -358,10 +358,12 @@ button:active{
         display:none;
     }
 
+    @media(max-width:768px){
     .main{
-    margin-left:0;
-    width:100%;
-    padding:45px 45px 0px 45px;
+        margin-left:0;
+        width:100%;
+        padding:20px 15px 90px 15px;
+    }
 }
     .song-container{
         grid-template-columns:repeat(2,1fr);
@@ -1336,6 +1338,7 @@ searchInput.addEventListener("keyup",()=>{
 
 </body>
 </html>
+
 
 
 
