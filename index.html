@@ -133,11 +133,10 @@ button:active{
     margin-bottom:50px;
     text-align:center;
 }
-
 .main{
     margin-left:0;
     width:100%;
-    padding:45px 45px 90px 45px; /* bottom space for player */
+    padding:45px 45px 30px 45px;
 }
 /* Topbar */
 .topbar{
@@ -358,12 +357,10 @@ button:active{
         display:none;
     }
 
-    @media(max-width:768px){
-    .main{
-        margin-left:0;
-        width:100%;
-        padding:20px 15px 90px 15px;
-    }
+   .main{
+    margin-left:0;
+    width:100%;
+    padding:45px 45px 30px 45px;
 }
     .song-container{
         grid-template-columns:repeat(2,1fr);
@@ -621,16 +618,13 @@ button i {
     }
 }
     .player{
-    position:fixed;
-    bottom:0;
-    left:0;
+    position:relative;
     width:100%;
     display:flex;
     justify-content:center;
     align-items:center;
     background:#000;
     padding:10px 0;
-    z-index:1000;
 }
 </style>
 </head>
@@ -1338,6 +1332,7 @@ searchInput.addEventListener("keyup",()=>{
 
 </body>
 </html>
+
 
 
 
