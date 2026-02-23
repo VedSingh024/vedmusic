@@ -137,7 +137,7 @@ button:active{
 .main{
     margin-left:0;
     width:100%;
-    padding:45px 45px 20px 45px;   /* bottom padding kam */
+    padding:45px 45px 0px 45px;
 }
 /* Topbar */
 .topbar{
@@ -359,10 +359,10 @@ button:active{
     }
 
     .main{
-        margin-left:0;
-        width:100%;
-        padding:20px 15px 20px 15px;   /* 120px hata diya */
-    }
+    margin-left:0;
+    width:100%;
+    padding:45px 45px 0px 45px;
+}
     .song-container{
         grid-template-columns:repeat(2,1fr);
         gap:14px;
@@ -617,6 +617,18 @@ button i {
     .search-box input{
         font-size:16px !important;
     }
+}
+    .player{
+    position:fixed;
+    bottom:0;
+    left:0;
+    width:100%;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:#000;
+    padding:10px 0;
+    z-index:1000;
 }
 </style>
 </head>
@@ -1324,6 +1336,7 @@ searchInput.addEventListener("keyup",()=>{
 
 </body>
 </html>
+
 
 
 
