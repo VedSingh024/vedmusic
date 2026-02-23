@@ -133,10 +133,11 @@ button:active{
     margin-bottom:50px;
     text-align:center;
 }
+
 .main{
     margin-left:0;
     width:100%;
-    padding:45px 45px 30px 45px;
+    padding:45px 45px 70px 45px;
 }
 /* Topbar */
 .topbar{
@@ -357,11 +358,11 @@ button:active{
         display:none;
     }
 
-   .main{
-    margin-left:0;
-    width:100%;
-    padding:45px 45px 30px 45px;
-}
+    .main{
+        margin-left:0;
+        width:100%;
+        padding:20px 15px 60px 15px;
+    }
     .song-container{
         grid-template-columns:repeat(2,1fr);
         gap:14px;
@@ -616,15 +617,6 @@ button i {
     .search-box input{
         font-size:16px !important;
     }
-}
-    .player{
-    position:relative;
-    width:100%;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    background:#000;
-    padding:10px 0;
 }
 </style>
 </head>
@@ -1039,12 +1031,7 @@ button i {
 </div>
 </div>
 <div class="player">
-
-    <div class="player-top">
-        <span id="nowPlaying">No song playing</span>
-    </div>
-    
-    <audio id="audioPlayer"></audio>
+ <audio id="audioPlayer"></audio>
 </div>
 <script>
 const container = document.getElementById("songContainer");
@@ -1053,7 +1040,6 @@ const homeBtn = document.getElementById("homeBtn");
 const likedBtn = document.getElementById("likedBtn");
 
 const audioPlayer = document.getElementById("audioPlayer");
-const nowPlaying = document.getElementById("nowPlaying");
 
 const cards = Array.from(document.querySelectorAll(".song-card"));
 
@@ -1092,7 +1078,6 @@ function playSong(index){
     });
 
     currentIndex = index;
-    nowPlaying.innerText = "Now Playing: " + songName;
 }
 
 /* CARD CLICK = PLAY / PAUSE ONLY */
@@ -1332,21 +1317,3 @@ searchInput.addEventListener("keyup",()=>{
 
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
