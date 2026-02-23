@@ -1332,34 +1332,33 @@ searchInput.addEventListener("keyup",()=>{
 });
    document.addEventListener("DOMContentLoaded", function(){
 
+    const searchInput = document.getElementById("searchInput");
     const searchOverlay = document.getElementById("searchOverlay");
     const bigSearch = document.getElementById("bigSearch");
 
-    if(window.innerWidth > 768){
+    // Open fullscreen search
+    searchInput.addEventListener("focus", function(){
+        searchOverlay.classList.add("active");
+        setTimeout(()=> bigSearch.focus(), 100);
+    });
 
-        searchInput.addEventListener("focus", function(){
-            searchOverlay.classList.add("active");
-            setTimeout(()=> bigSearch.focus(), 100);
-        });
+    // Typing sync
+    bigSearch.addEventListener("keyup", function(e){
+        searchInput.value = bigSearch.value;
+        searchInput.dispatchEvent(new Event("keyup"));
 
-        bigSearch.addEventListener("keyup", function(e){
+        if(e.key === "Escape"){
+            searchOverlay.classList.remove("active");
+            searchInput.blur();
+        }
+    });
 
-            searchInput.value = bigSearch.value;
-            searchInput.dispatchEvent(new Event("keyup"));
-
-            if(e.key === "Escape"){
-                searchOverlay.classList.remove("active");
-                searchInput.blur();
-            }
-        });
-
-        searchOverlay.addEventListener("click", function(e){
-            if(e.target === searchOverlay){
-                searchOverlay.classList.remove("active");
-            }
-        });
-
-    }
+    // Close when clicking outside
+    searchOverlay.addEventListener("click", function(e){
+        if(e.target === searchOverlay){
+            searchOverlay.classList.remove("active");
+        }
+    });
 
 });
 </script>
@@ -1370,4 +1369,5 @@ searchInput.addEventListener("keyup",()=>{
 
 </body>
 </html>
+
 
