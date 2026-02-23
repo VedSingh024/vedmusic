@@ -500,7 +500,6 @@ button:active{
     border:1px solid #111;
 }
 
-/* Desktop hover bhi black hi rahe */
 @media(hover:hover){
     .player-controls button:hover{
         background:#000 !important;
@@ -541,7 +540,6 @@ button i {
   backdrop-filter: none !important;
   -webkit-backdrop-filter: none !important;
 }
-/* ================= CLEAN CLASSY BUTTON FIX ================= */
 
 /* Bottom player buttons → pure black */
 .player-controls button{
@@ -551,15 +549,13 @@ button i {
     box-shadow:none !important;
 }
 
-/* Hover pe bhi koi grey nahi */
 .player-controls button:hover{
     background:#000 !important;
     color:#fff !important;
 }
 
-/* Card play/pause button → NO GREY */
 .card-play{
-    background:#1db954 !important;   /* Spotify green */
+    background:#1db954 !important;
     box-shadow:none !important;
 }
 
@@ -568,7 +564,6 @@ button i {
     background:#1db954 !important;
 }
 
-/* Player bar stays transparent */
 .player{
     background:transparent !important;
 }
@@ -585,13 +580,13 @@ button i {
     width:0%;
     background:#1db954;
     border-radius:10px;
-    transition:none;   /* remove transition */
+    transition:none;
 }
 .mini-like{
     position:absolute;
     top:6px;
     right:8px;
-    font-size:11px;   /* smaller */
+    font-size:11px;
     width:18px;
     height:18px;
     display:flex;
@@ -631,8 +626,14 @@ button i {
 }
     .footer-text{
     text-align:center;
-    margin-top:35px;   /* Ye line important hai */
+    margin-top:35px;
     margin-bottom:20px;
+}
+    @media(max-width:768px){
+    .search-box input,
+    #bigSearch{
+        font-size:16px !important;
+    }
 }
 </style>
 </head>
@@ -1162,7 +1163,7 @@ cards.forEach((card, index)=>{
     const progress = card.querySelector(".card-progress");
     if(!progress) return;
 
-    progress.style.touchAction = "none";   // 👈 YE LINE ADD KARNI HAI
+    progress.style.touchAction = "none";
 
     let dragging = false;
 
@@ -1337,6 +1338,7 @@ searchInput.addEventListener("keyup",()=>{
 
 </body>
 </html>
+
 
 
 
