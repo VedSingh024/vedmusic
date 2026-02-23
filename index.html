@@ -150,7 +150,7 @@ button:active{
 
 .search-box{
     width:100%;
-    max-width:600px;
+    max-width:100%;
 }
 
 .search-box input{
@@ -1330,37 +1330,6 @@ searchInput.addEventListener("keyup",()=>{
             : "none";
     });
 });
-   document.addEventListener("DOMContentLoaded", function(){
-
-    const searchInput = document.getElementById("searchInput");
-    const searchOverlay = document.getElementById("searchOverlay");
-    const bigSearch = document.getElementById("bigSearch");
-
-    // Open fullscreen search
-    searchInput.addEventListener("focus", function(){
-        searchOverlay.classList.add("active");
-        setTimeout(()=> bigSearch.focus(), 100);
-    });
-
-    // Typing sync
-    bigSearch.addEventListener("keyup", function(e){
-        searchInput.value = bigSearch.value;
-        searchInput.dispatchEvent(new Event("keyup"));
-
-        if(e.key === "Escape"){
-            searchOverlay.classList.remove("active");
-            searchInput.blur();
-        }
-    });
-
-    // Close when clicking outside
-    searchOverlay.addEventListener("click", function(e){
-        if(e.target === searchOverlay){
-            searchOverlay.classList.remove("active");
-        }
-    });
-
-});
 </script>
 <!-- FULL SCREEN SEARCH OVERLAY -->
 <div class="search-overlay" id="searchOverlay">
@@ -1369,5 +1338,3 @@ searchInput.addEventListener("keyup",()=>{
 
 </body>
 </html>
-
-
