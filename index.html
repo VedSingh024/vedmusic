@@ -1330,6 +1330,33 @@ searchInput.addEventListener("keyup",()=>{
             : "none";
     });
 });
+    const searchOverlay = document.getElementById("searchOverlay");
+const bigSearch = document.getElementById("bigSearch");
+
+/* OPEN FULL SCREEN SEARCH (PC ONLY) */
+if(window.innerWidth > 768){
+
+    searchInput.addEventListener("focus", ()=>{
+        searchOverlay.classList.add("active");
+        bigSearch.focus();
+    });
+
+    bigSearch.addEventListener("keyup",(e)=>{
+        searchInput.value = bigSearch.value;
+        searchInput.dispatchEvent(new Event("keyup"));
+
+        if(e.key === "Escape"){
+            searchOverlay.classList.remove("active");
+        }
+    });
+
+    searchOverlay.addEventListener("click",(e)=>{
+        if(e.target === searchOverlay){
+            searchOverlay.classList.remove("active");
+        }
+    });
+
+}
 </script>
 <!-- FULL SCREEN SEARCH OVERLAY -->
 <div class="search-overlay" id="searchOverlay">
@@ -1338,13 +1365,3 @@ searchInput.addEventListener("keyup",()=>{
 
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
